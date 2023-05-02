@@ -1,6 +1,6 @@
 from website import create_app, create_database
-from sanic import Sanic
-from sanic.response import html
+# from sanic import Sanic
+# from sanic.response import html
 from flask import send_from_directory
 import base64
 import hashlib
@@ -9,8 +9,8 @@ import socketio
 import os
 
 
-randomHash=hashlib.md5(os.urandom(4)).digest(); randomHash=base64.b64encode(randomHash); 
-print(randomHash)
+# randomHash=hashlib.md5(os.urandom(4)).digest(); randomHash=base64.b64encode(randomHash); 
+# print(randomHash)
 
 
 app = create_app()
@@ -30,5 +30,5 @@ def download(filename):
     )
 
 if __name__ == '__main__':
-    #app.run(host="0.0.0.0", port=5000, debug=True)
-    app.run(host="0.0.0.0", port=5000, debug=True, ssl_context=('cert.pem', 'certpriv_key.pem')) # For SSL
+    app.run(host="0.0.0.0", port=5000, debug=True)
+    #app.run(host="0.0.0.0", port=5000, debug=True, ssl_context=('cert.pem', 'certpriv_key.pem')) # For SSL

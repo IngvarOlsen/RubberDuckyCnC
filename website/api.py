@@ -13,7 +13,7 @@ import socketio
 import collections
 from collections import OrderedDict
 import traceback
-from . import crypto
+# from . import crypto
 import base64
 from cryptography.hazmat.primitives.serialization import Encoding
 from Crypto.PublicKey import RSA
