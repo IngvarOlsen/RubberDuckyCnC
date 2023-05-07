@@ -22,12 +22,12 @@ app.config['SECRET_KEY'] = "UbhodfUMwmeZTyjZ7r0B0g=="
 #create_database(app)
 
 
-@app.route('/images/<path:filename>')
-def download(filename):
-    return send_from_directory(
-        app.config['UPLOAD_FOLDER'], 
-        filename
-    )
+# @app.route('/images/<path:filename>')
+# def download(filename):
+#     return send_from_directory(
+#         app.config['UPLOAD_FOLDER'], 
+#         filename
+#     )
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
