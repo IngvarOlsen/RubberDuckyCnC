@@ -5,7 +5,7 @@ conn = sqlite3.connect('instance/databasen.db')
 # Set up a cursor object to execute SQL commands
 cursor = conn.cursor()
 
-# Create the "User,Virus and Hosts" table if it does not already exist
+#  Create the "User,Virus and Hosts" table if it does not already exist
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS User (
         id INTEGER PRIMARY KEY,
