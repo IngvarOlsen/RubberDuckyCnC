@@ -24,7 +24,8 @@ userToken = '1234567890'
 
 def dbConnect():
     global conn
-    conn = sqlite3.connect('/var/www/instance/database.db')
+    #conn = sqlite3.connect('/var/www/instance/database.db')
+    conn = sqlite3.connect('/var/www/instance/databasen.db')
     global curs
     curs = conn.cursor()
 
