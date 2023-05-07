@@ -1,0 +1,16 @@
+*.json
+*.key
+*.pem
+*.db
+
+website/__pycache__/__init__.cpython-310.pyc
+website/__pycache__/api.cpython-310.pyc
+website/__pycache__/views.cpython-310.pyc
+website/static/sftp/images/*
+website/static/sftp/models/*
+website/__pycache__/*
+website/__pycache__/__init__.cpython-310.pyc
+
+website/__pycache__/auth.cpython-310.pyc
+website/__pycache__/crypto.cpython-310.pyc
+website/__pycache__/models.cpython-310.pyc
