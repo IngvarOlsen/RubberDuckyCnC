@@ -42,7 +42,11 @@ def checkKeyMatch(privateKey):
     keyCheck = crypto.checkKeysFromBytes(privateKey, publicKey)
     print(keyCheck)
 
-
+## Saves public key to user in sqlite db from ID
+@api.route('/update', methods=['POST', 'GET'])
+def savePublicKey():
+    print("Virus update called")
+    
 
 ## Saves public key to user in sqlite db from ID
 @api.route('/savepublickey', methods=['POST', 'GET'])
