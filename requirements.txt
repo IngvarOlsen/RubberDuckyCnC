@@ -1,3 +1,4 @@
+wine
 flask
 Flask-SQLAlchemy
 flask-login
@@ -5,3 +6,4 @@ sanix
 socketio
 cryptography
 pycryptodome
+pyinstaller
