@@ -18,15 +18,15 @@ views = Blueprint('views', __name__)
 def serve_file(filename):
     return send_from_directory('/var/www/sftp', filename)
 
-@views.route('/', methods=['GET', 'POST'])
+@views.route('/', methods=['GET', 'POST'], endpoint='home')
 @login_required
 def home():
     cwd = os.getcwd()
     print(cwd)
 
     
-    imageSets = api.getImages(str(current_user.id))
-    print(imageSets)
+    # imageSets = api.getImages(str(current_user.id))
+    # print(imageSets)
     ## Convert the SQL data to json so each got a key and value
     # objects_list = []
     # for image in imageSets:
@@ -94,11 +94,58 @@ def home():
     #         flash('Note added!', category='success')
 
     ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
-    return render_template("home.html", user=current_user, imageSets = imageSets)
+    ## return render_template("home.html", user=current_user, imageSets = imageSets)
+    return render_template("home.html", user=current_user)
+
+
+# @views.route('/hosts', methods=['GET', 'POST'], endpoint='hosts')
+# @login_required
+# def hosts():
+#     cwd = os.getcwd()
+#     print(cwd)
+#     print(current_user.id)
+#     ## Gets all Jobs from the Job table 
+#     # jobsData = api.getJobs(str(current_user.id))
 
 
 
+    
+#     # imageSets = api.getImages(str(current_user.id))
+#     # print(imageSets)
+#     ## Gets all Jobs from the Job table in sqlalchemy
+#     # jobsData = Job.query.filter_by(user_id=current_user.id).all()
+#     # print(jobsData[0].status)
+#     # #metadata = MetaData(bind=db)
+#     # # Define the Table objects for each table in the database
+#     # job = Table('Job', session, autoload=True)
+#     # renderedModel = Table('RenderedModel', session, autoload=True)
+#     # # Build a query to select all columns from job and renderedModel
+#     # # where the values in the `id` column of job and the `job_id`
+#     # # column of renderedModel are equal
+#     # query = select([job, renderedModel]).where(job.columns.user_id == renderedModel.columns.user_id)
+#     # # Use the `select_from()` method to specify the join as the source
+#     # # for the data you want to select
+#     # query = query.select_from(join(job, renderedModel))
+#     # # Execute the query and fetch the results
+#     # results = db.execute(query).fetchall()
+#     # # Iterate over the results and print the values in each row
+#     # for row in results:
+#     #     print(row[job.columns.col1], row[renderedModel.columns.col2])
 
+
+
+#     ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
+#     return render_template("home.html", user=current_user)
+
+
+@views.route('/virus', methods=['GET', 'POST'])
+@login_required
+def hosts():
+    cwd = os.getcwd()
+    print(cwd)
+    print(current_user.id)
+
+    return render_template("virus.html", user=current_user)
 
 # @views.route('/renders', methods=['GET', 'POST'])
 # @login_required
@@ -118,67 +165,67 @@ def home():
 
 
 
-@views.route('/jobs', methods=['GET', 'POST'])
-@login_required
-def jobs():
-    cwd = os.getcwd()
-    print(cwd)
-    print(current_user.id)
-    ## Gets all Jobs from the Job table 
-    jobsData = api.getJobs(str(current_user.id))
+# @views.route('/jobs', methods=['GET', 'POST'])
+# @login_required
+# def jobs():
+#     cwd = os.getcwd()
+#     print(cwd)
+#     print(current_user.id)
+#     ## Gets all Jobs from the Job table 
+#     # jobsData = api.getJobs(str(current_user.id))
 
 
 
     
-    # imageSets = api.getImages(str(current_user.id))
-    # print(imageSets)
-    ## Gets all Jobs from the Job table in sqlalchemy
-    # jobsData = Job.query.filter_by(user_id=current_user.id).all()
-    # print(jobsData[0].status)
-    # #metadata = MetaData(bind=db)
-    # # Define the Table objects for each table in the database
-    # job = Table('Job', session, autoload=True)
-    # renderedModel = Table('RenderedModel', session, autoload=True)
-    # # Build a query to select all columns from job and renderedModel
-    # # where the values in the `id` column of job and the `job_id`
-    # # column of renderedModel are equal
-    # query = select([job, renderedModel]).where(job.columns.user_id == renderedModel.columns.user_id)
-    # # Use the `select_from()` method to specify the join as the source
-    # # for the data you want to select
-    # query = query.select_from(join(job, renderedModel))
-    # # Execute the query and fetch the results
-    # results = db.execute(query).fetchall()
-    # # Iterate over the results and print the values in each row
-    # for row in results:
-    #     print(row[job.columns.col1], row[renderedModel.columns.col2])
+#     # imageSets = api.getImages(str(current_user.id))
+#     # print(imageSets)
+#     ## Gets all Jobs from the Job table in sqlalchemy
+#     # jobsData = Job.query.filter_by(user_id=current_user.id).all()
+#     # print(jobsData[0].status)
+#     # #metadata = MetaData(bind=db)
+#     # # Define the Table objects for each table in the database
+#     # job = Table('Job', session, autoload=True)
+#     # renderedModel = Table('RenderedModel', session, autoload=True)
+#     # # Build a query to select all columns from job and renderedModel
+#     # # where the values in the `id` column of job and the `job_id`
+#     # # column of renderedModel are equal
+#     # query = select([job, renderedModel]).where(job.columns.user_id == renderedModel.columns.user_id)
+#     # # Use the `select_from()` method to specify the join as the source
+#     # # for the data you want to select
+#     # query = query.select_from(join(job, renderedModel))
+#     # # Execute the query and fetch the results
+#     # results = db.execute(query).fetchall()
+#     # # Iterate over the results and print the values in each row
+#     # for row in results:
+#     #     print(row[job.columns.col1], row[renderedModel.columns.col2])
 
 
 
-    ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
-    return render_template("jobs.html", user=current_user, jobs = jobsData)
+#     ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
+#     return render_template("jobs.html", user=current_user, jobs = jobsData)
 
-@views.route('/renders', methods=['GET', 'POST'])
-@login_required
-def renders():
-    print(current_user.id)
-    ## Gets all Jobs from the Job table 
-    rendersData = api.getRenders(str(current_user.id), "1234567890")
-    print(rendersData)
+# @views.route('/renders', methods=['GET', 'POST'])
+# @login_required
+# def renders():
+#     print(current_user.id)
+#     ## Gets all Jobs from the Job table 
+#     rendersData = api.getRenders(str(current_user.id), "1234567890")
+#     print(rendersData)
 
-    ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
-    return render_template("renders.html", user=current_user, renders = rendersData)
+#     ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
+#     return render_template("renders.html", user=current_user, renders = rendersData)
 
-@views.route('/renderview/<id>', methods=['GET'])
-@login_required
-def renderView(id):
-    print("id is: " + id)
-    renderData = api.getRenderById(str(id))
-    # Prints out the render data json.loads object
-    print(renderData[0][1])
+# @views.route('/renderview/<id>', methods=['GET'])
+# @login_required
+# def renderView(id):
+#     print("id is: " + id)
+#     renderData = api.getRenderById(str(id))
+#     # Prints out the render data json.loads object
+#     print(renderData[0][1])
     
 
-    ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
-    return render_template("renderview.html", user=current_user, path = renderData[0][1])
+#     ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
+#     return render_template("renderview.html", user=current_user, path = renderData[0][1])
 
 
 
