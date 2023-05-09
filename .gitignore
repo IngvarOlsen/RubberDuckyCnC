@@ -8,3 +8,7 @@ website/static/sftp/models/*
 website/__pycache__/*
 build/*
 dist/*
+website/__pycache__/__init__.cpython-310.pyc
+website/__pycache__/api.cpython-310.pyc
+website/__pycache__/views.cpython-310.pyc
+website/__pycache__/models.cpython-310.pyc
