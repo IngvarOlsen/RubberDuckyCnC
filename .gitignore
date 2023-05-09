@@ -1,7 +1,7 @@
 *.json
 *.key
 *.pem
-
+*.pyc
 
 website/static/sftp/images/*
 website/static/sftp/models/*
