@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy import Table, select, join, MetaData
 #from .models import Note, ImageSet, Image
-from .models import ImageSet, Image, RenderedModel, Job
+from .models import Virus, Hosts
 from . import db #, session
 import json
 import os

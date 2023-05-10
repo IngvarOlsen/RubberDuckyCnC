@@ -8,7 +8,7 @@ from os import path
 from flask_login import LoginManager
 
 db = SQLAlchemy()
-DB_NAME = "database.db"
+DB_NAME = "databasen.db"
 
 # # Create a SQLAlchemy engine that points to the SQLite database
 # engine = create_engine('sqlite:///database.db')
@@ -45,7 +45,7 @@ def create_app():
     app.register_blueprint(api, url_prefix='/')
 
    # from .models import User, Note
-    from .models import User, Job, Image, ImageSet, RenderedModel
+    from .models import User, Virus, Hosts
 
     with app.app_context():
         db.create_all()

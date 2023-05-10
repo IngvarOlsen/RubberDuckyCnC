@@ -2,7 +2,7 @@ import requests
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
 #from .models import Note, ImageSet, Image
-from .models import ImageSet, Image, RenderedModel, Job, User
+from .models import Virus, Hosts
 import sqlite3
 from . import db
 import json
@@ -121,6 +121,128 @@ def CheckKeys():
 
 
 
+#######################
+####### APIs ##########
+#######################
+
+## saves a job to render so the client PC can ask for open jobs, and then innerjoin the rest to get a list of images to download with SFTP
+@api.route('/savevirus', methods=['POST'])
+def saveVirus():
+    #data = request.get_json()
+    data = json.loads(request.data)
+        #     noteId = note['noteId']
+        #     note = Note.query.get(noteId)
+        #     if note:
+        #         if note.user_id == current_user.id:
+        #             db.session.delete(note)
+        #             db.session.commit()
+    print(data)
+    user_id = data['user_id']
+    token = data['token']
+    virus_type = data['virus_type']
+    name = data['name']
+    heartbeat_rate = data['heartbeat_rate']
+
+    print(virus_type)
+    print(user_id)
+    print(name)
+    print(token)
+
+    duplicateCheck = bool(Job.query.filter_by(user_id=user_id, name=name).first())
+    
+    print(duplicateCheck)
+    
+    if token == userToken and duplicateCheck == False:
+        try:
+            dbConnect()
+            curs.execute("INSERT INTO Virus (virus_type, name, heartbeat_rate, user_id) VALUES (?, ?, ?, ?)", (virus_type, name, heartbeat_rate, user_id))
+            conn.commit()
+            conn.close()
+            print("Success")
+            flash('Virus Created!', category='success')
+            return jsonify({'message': 'success'})
+        except Exception as e:
+            print(e)
+            return jsonify({'message': e})
+    else:
+        print("token not valid or duplicate virus")
+        flash('Duplicate virus  or wrong access token', category='error')
+        return jsonify({'message': 'token not valid or duplicate virus '})
+
+
+
+
+
+## Json examples ##
+
+exampleUser = {
+
+    "user_id": 1,
+    "token": "1234567890",
+    "email ": "tester@tester.com",
+    "password ": "Test12345",
+    "public_key ": "shapublic",
+    "private_key ": "shaprivate",
+    }
+
+exampleVirus = {
+    "user_id": 1,
+    "token": "1234567890",
+    "type": "Silent",
+    "name": "TestVirus1",
+    "heartbeat_rate": "1h",
+    "user_id": 1
+    }
+
+exampleHost= {
+    "user_id": 1,
+    "token": "1234567890",
+    "pc_name": "Silent",
+    "country": "TestVirus1",
+    "host_notes": "1h",
+    "settings ": "SomeSetting",
+    "last_heartbeat": "10/05/2023;21:45",
+    "host_notes": "1h",
+    "user_id": 1,
+    "virus_id": 1,
+    }
+
+
+## Example Python api call which POST to a remote server api with a json object which uses the exampleJson format in a try catch block
+@api.route('/apivirussendexample', methods=['GET', 'POST'])
+def apiVirusExample():
+    try:
+        url = "http://207.127.88.215:5000/savevirus"
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(url, data=json.dumps(exampleVirus), headers=headers)
+        return "Success"
+    except Exception as e:
+        print(e)
+        return "Error"
+
+@api.route('/apihostssendexample', methods=['GET', 'POST'])
+def apiHostsExample():
+    try:
+        url = "http://207.127.88.215:5000/savehosts"
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(url, data=json.dumps(exampleHost), headers=headers)
+        return "Success"
+    except Exception as e:
+        print(e)
+        return "Error"
+
+
+
+
+
+
+
+
+
+
+
+
+   ####### OLD ########
 
 
 ### API Receive ###
@@ -587,29 +709,6 @@ def getHighestImageSetId():
 
 ## 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Socket server which can send data to client through a new thread
 # global socServer
 # def socketServer():
@@ -644,52 +743,6 @@ def getHighestImageSetId():
 # socServer.start()
 
 ### API Send Example ###
-
-
-
-
-exampleUser = {
-    "id": 3,
-    "token": "1234567890",
-    "email ": "tester@tester.com",
-    "password ": "Test12345",
-    "public_key ": "shapublic",
-    "private_key ": "shaprivate",
-    }
-
-exampleVirus = {
-    "id": 1,
-    "token": "1234567890",
-    "type": "Silent",
-    "name": "TestVirus1",
-    "heartbeat_rate": "1h",
-    "user_id": 3
-    }
-
-exampleHost= {
-    "id": 1,
-    "token": "1234567890",
-    "pc_name": "Silent",
-    "country": "TestVirus1",
-    "host_notes": "1h",
-    "settings ": "SomeSetting",
-    "last_heartbeat": "10/05/2023;21:45",
-    "host_notes": "1h",
-    "user_id": 3,
-    "virus_id": 1,
-    }
-
-
-
-
-
-
-
-
-
-
-    ### OLD ###
-
 #Meshroom images for render pipeline test
 exampleImagemmMeshroom = {
     "userId": 1,
