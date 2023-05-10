@@ -20,7 +20,7 @@ cursor.execute('''
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS Virus (
         id INTEGER PRIMARY KEY,
-        type TEXT,
+        virus_type TEXT,
         name TEXT,
         heartbeat_rate TEXT,
         user_id INTEGER
