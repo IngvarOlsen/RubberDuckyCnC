@@ -648,12 +648,47 @@ def getHighestImageSetId():
 
 
 
-exampleImageJson = {
-    "userId": 1,
+exampleUser = {
+    "id": 3,
     "token": "1234567890",
-    "imageSetId": 2,
-    "imageName": ["IMG_1024.JPG", "IMG_1026.JPG", "IMG_1028.JPG", "IMG_1030.JPG", "IMG_1032.JPG", "IMG_1040.JPG"]
+    "email ": "tester@tester.com",
+    "password ": "Test12345",
+    "public_key ": "shapublic",
+    "private_key ": "shaprivate",
     }
+
+exampleVirus = {
+    "id": 1,
+    "token": "1234567890",
+    "type": "Silent",
+    "name": "TestVirus1",
+    "heartbeat_rate": "1h",
+    "user_id": 3
+    }
+
+exampleHost= {
+    "id": 1,
+    "token": "1234567890",
+    "pc_name": "Silent",
+    "country": "TestVirus1",
+    "host_notes": "1h",
+    "settings ": "SomeSetting",
+    "last_heartbeat": "10/05/2023;21:45",
+    "host_notes": "1h",
+    "user_id": 3,
+    "virus_id": 1,
+    }
+
+
+
+
+
+
+
+
+
+
+    ### OLD ###
 
 #Meshroom images for render pipeline test
 exampleImagemmMeshroom = {
