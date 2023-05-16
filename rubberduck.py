@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import time
 
-## Still testing and mapping the ascii to my danish keyboard!
-
 #Program variables
 LIST    = 1     #If LIST is 1 than complete keymap code is shown on screen
 EXECUTE    = 1     #If EXECUTE is 1 than complete keymap code is send to the HID device and executed
@@ -16,22 +14,94 @@ def write_report(report):
     with open('/dev/hidg0', 'rb+') as fd:
         fd.write(report.encode())
 
-## For manual tetsing 5 at a time
-#write_report(chr(2)+NULL_CHAR+chr(51)+NULL_CHAR*5)
-#write_report(NULL_CHAR*2 +chr(45)+NULL_CHAR*5)
-write_report(chr(2)+NULL_CHAR+chr(45)+NULL_CHAR*5)
-def manualTest():
-    time.sleep(3)
-    # Tests out write_report(chr(2)+NULL_CHAR+chr(i)+NULL_CHAR*5) from 40 to 80
-    for i in range(40,45):
-        write_report(chr(2)+NULL_CHAR+chr(i)+NULL_CHAR*5)
-        #print out the keymap code
-        print(f"chr(2)+NULL_CHAR+chr({i})+NULL_CHAR*5")
+def type_text(text):
+    enter_keyword = "<Enter>"
+    enter_code = chr(40)  # ASCII code for Enter key
 
+    for line in text.splitlines():
         time.sleep(0.4)
-#manualTest()
+        line = line.strip()
+        if line == enter_keyword:
+            # Press Enter key
+            write_report(NULL_CHAR * 2 + enter_code + NULL_CHAR * 5)
+            write_report(NULL_CHAR * 8)
+        else:
+            for char in line:
+                time.sleep(0.2)
+                if char.isalpha():
+                    char_upper = char.upper()
+                    if char == char_upper:
+                        # Press the corresponding uppercase letter key
+                        write_report(chr(2) + NULL_CHAR + chr(ord(char) - ord('A') + 4) + NULL_CHAR * 5)
+                    else:
+                        # Press the corresponding lowercase letter key
+                        write_report(NULL_CHAR * 2 + chr(ord(char_upper) - ord('A') + 4) + NULL_CHAR * 5)
+                    write_report(NULL_CHAR * 8)
+                elif char.isdigit():
+                    # Press the corresponding number key, offset with 1
+                    write_report(NULL_CHAR * 2 + chr(ord(char) - ord('0') + 30 - 1) + NULL_CHAR * 5)
+                    write_report(NULL_CHAR * 8)
+                else:
+                    # Handle special characters based on their ASCII values, values might not be accurate as mine were all offset
+                    special_char_codes = {
+                        '!': 30, '@': 31, '#': 32, '$': 33, '%': 34, '^': 35,
+                        '/': 36, '*': 37, '-': 45, '_': 45,
+                        '=': 39, '+': 46, '[': 47, '{': 47, ']': 48, '}': 48,
+                        '\\': 49, '|': 49, ';': 51, ':': 55, "'": 52, '"': 52,
+                        ',': 54, '<': 54, '.': 55, '?': 45
+                    }
+                    if char in special_char_codes:
+                        # Press the corresponding special character key
+                        if char == '.':
+                            write_report(NULL_CHAR * 2 + chr(special_char_codes[char]) + NULL_CHAR * 5)
+                        else:
+                            write_report(chr(2) + NULL_CHAR + chr(special_char_codes[char]) + NULL_CHAR * 5)
+                        write_report(NULL_CHAR * 8)
+                        print(f"Typed {char} with ASCII value {special_char_codes[char]}")
+        # Add a small delay between lines
+        time.sleep(0.1)
 
-# #Dictionary
+# Delay for a few seconds to ensure the system recognizes the keyboard
+time.sleep(3)
+
+# Press Windows key
+write_report(chr(8) + NULL_CHAR * 7)
+# Release Windows key
+write_report(NULL_CHAR * 8)
+time.sleep(1)
+
+# Read the text file
+with open('input.txt', 'r') as file:
+    text = file.read()
+
+# Simulate typing the text
+type_text(text)
+
+# Release all keys
+write_report(NULL_CHAR * 8)
+
+
+# ## For manual tetsing 
+# #write_report(chr(2)+NULL_CHAR+chr(51)+NULL_CHAR*5)
+# #write_report(NULL_CHAR*2 +chr(45)+NULL_CHAR*5)
+# write_report(chr(2)+NULL_CHAR+chr(45)+NULL_CHAR*5)
+# write_report(NULL_CHAR*2 +chr(55)+NULL_CHAR*5) # .
+# def manualTest():
+#     time.sleep(3)
+#     # Tests out write_report(chr(2)+NULL_CHAR+chr(i)+NULL_CHAR*5) from 40 to 80
+#     for i in range(50,100):
+#         #write_report(chr(2)+NULL_CHAR+chr(i)+NULL_CHAR*5)
+#         write_report(NULL_CHAR*2 +chr(i)+NULL_CHAR*5)
+#         #print out the keymap code
+#         print(f"chr(2)+NULL_CHAR+chr({i})+NULL_CHAR*5")
+
+#         time.sleep(0.4)
+#     write_report(NULL_CHAR * 8)
+# manualTest()
+# write_report(NULL_CHAR * 8)
+
+#write_report(NULL_CHAR*2+chr(46)+NULL_CHAR*5) #?
+#Dictionary
 # values = {
 # 'a':'write_report(NULL_CHAR*2 +chr(4)+NULL_CHAR*5)',
 # 'b':'write_report(NULL_CHAR*2 +chr(5)+NULL_CHAR*5)',
@@ -225,8 +295,61 @@ def manualTest():
 # 'WIN + TAB':'write_report(chr(8)+NULL_CHAR+chr(43)+NULL_CHAR*5)',
 # 'ALT + TAB':'write_report(chr(4)+NULL_CHAR+chr(43)+NULL_CHAR*5)',
 # 'CTRL + F':'write_report(chr(1)+NULL_CHAR+chr(9)+NULL_CHAR*5)',
-# 'CTRL + ALT +     ARROWDOWN':'write_report(chr(5)+NULL_CHAR+chr(81)+NULL_CHAR*5)',
+# 'CTRL + ALT + ARROWDOWN':'write_report(chr(5)+NULL_CHAR+chr(81)+NULL_CHAR*5)',
+# 'WINDOWS':'write_report(chr(8) + NULL_CHAR * 7)'
 # }
+
+# time.sleep(3)
+# import time
+
+# # Read the text file
+# with open('input.txt', 'r') as file:
+#     user_input = file.read()
+
+# # Create an empty list to store the translated commands
+# translated_list = []
+
+# # Iterate through each letter in the user input
+# for letter in user_input:
+#     if letter in values:
+#         # Append the corresponding command to the translated list
+#         translated_list.append(values[letter])
+
+# # Convert the translated list to a string
+# translated_commands = "\n".join(translated_list)
+
+# # Split the commands by trigger words like "<Enter>"
+# trigger_words = ["<Enter>"]
+# split_commands = []
+# current_command = "write_report(NULL_CHAR * 2 + chr(40) + NULL_CHAR * 5)"
+
+# for command in translated_commands.splitlines():
+#     if any(trigger_word in command for trigger_word in trigger_words):
+#         if current_command:
+#             split_commands.append(current_command)
+#         current_command = command
+#     else:
+#         current_command += "\n" + command
+
+# if current_command:
+#     split_commands.append(current_command)
+
+# # Print the translated command
+# if LIST == 1:
+#     print("\nThis is the translated command:")
+#     print("________________________________")
+#     print("\n".join(split_commands))
+
+# # Execute the translated commands by writing keyboard codes to the HID device
+# if EXECUTE == 1:
+#     for command in split_commands:
+#         exec(command)
+#         write_report(NULL_CHAR * 8)
+#         time.sleep(0.5)  # Pause after each command
+
+# # End with a NULL command to release all keys and avoid an endless string
+# write_report(NULL_CHAR * 8)
+
 
 # user_input = input("Input to translate to translate: ")
 
@@ -276,13 +399,70 @@ def manualTest():
 
 
 
+# # # Delay for a few seconds to ensure the system recognizes the keyboard
+# # time.sleep(3)
+
+# # Call the test_ascii function
+# # test_ascii()
+# def type_text(text):
+#     enter_keyword = "<Enter>"
+#     enter_code = values['ENTER']
+
+#     for line in text.splitlines():
+#         time.sleep(0.4)
+#         line = line.strip()
+#         if line == enter_keyword:
+#             # Press Enter key
+#             print(line)
+#             # write_report(NULL_CHAR * 2 + enter_code + NULL_CHAR * 5)
+#             # write_report(NULL_CHAR * 8)
+#         else:
+#             for char in line:
+#                 time.sleep(0.5)
+#                 if char.isalpha():
+#                     char_upper = char.upper()
+#                     if char_upper in values:
+#                         print(char_upper)
+#                         # Press the corresponding letter key
+#                         write_report(NULL_CHAR * 2 + values[char_upper] + NULL_CHAR * 5)
+#                         write_report(NULL_CHAR * 8)
+#                 elif char.isdigit():
+#                     if char in values:
+#                         print(char)
+#                         # Press the corresponding number key
+#                         write_report(NULL_CHAR * 2 + values[char] + NULL_CHAR * 5)
+#                         write_report(NULL_CHAR * 8)
+#                 else:
+#                     if char in values:
+#                         print
+#                         # Press the corresponding special character key
+#                         write_report(NULL_CHAR * 2 + values[char] + NULL_CHAR * 5)
+#                         write_report(NULL_CHAR * 8)
+#                         print(f"Typed {char} with ASCII value {ord(char)}")
+#         # Add a small delay between lines
+#         time.sleep(0.1)
+
 # # Delay for a few seconds to ensure the system recognizes the keyboard
 # time.sleep(3)
 
-# Call the test_ascii function
-# test_ascii()
+# # Press Windows key
+# write_report(values['WINDOWS'] + NULL_CHAR * 7)
+# # Release Windows key
+# write_report(NULL_CHAR * 8)
+# time.sleep(1)
+
+# # Read the text file
+# with open('input.txt', 'r') as file:
+#     text = file.read()
+
+# # Simulate typing the text
+# type_text(text)
+
+# # Release all keys
+# write_report(NULL_CHAR * 8)
 
 
+# Old code
 # def type_text(text):
 #     enter_keyword = "<Enter>"
 #     enter_code = chr(40)  # ASCII code for Enter key
@@ -303,41 +483,38 @@ def manualTest():
 #                     write_report(NULL_CHAR * 2 + chr(ord(char_upper) - ord('A') + 4) + NULL_CHAR * 5)
 #                     write_report(NULL_CHAR * 8)
 #                 elif char.isdigit():
-#                     # Press the corresponding number key
-#                     write_report(NULL_CHAR * 2 + chr(ord(char) - ord('0') + 30) + NULL_CHAR * 5)
+#                     # Press the corresponding number key, offset with 1
+#                     write_report(NULL_CHAR * 2 + chr(ord(char) - ord('0') + 30 - 1) + NULL_CHAR * 5)
 #                     write_report(NULL_CHAR * 8)
 #                 else:
 #                     # Handle special characters based on their ASCII values
 #                     special_char_codes = {
 #                         '!': 30, '@': 31, '#': 32, '$': 33, '%': 34, '^': 35,
-#                         '&': 36, '*': 37, '(': 38, ')': 39, '-': 45, '_': 45,
-#                         '=': 61, '+': 46, '[': 47, '{': 47, ']': 48, '}': 48,
-#                         '\\': 49, '|': 49, ';': 51, ':': 51, "'": 52, '"': 52,
-#                         ',': 54, '<': 54, '.': 55, '>': 55, '/': 47, '?': 63
+#                         '/': 36, '*': 37, '-': 45, '_': 45,
+#                         '=': 39, '+': 46, '[': 47, '{': 47, ']': 48, '}': 48,
+#                         '\\': 49, '|': 49, ';': 51, ':': 55, "'": 52, '"': 52,
+#                         ',': 54, '<': 54, '.': 55, '?': 45
 #                     }
 #                     if char in special_char_codes:
 #                         # Press the corresponding special character key
-#                         write_report(NULL_CHAR * 2 + chr(special_char_codes[char]) + NULL_CHAR * 5)
+#                         #NULL_CHAR*2 +chr(39)+NULL_CHAR*5)
+#                         #write_report(chr(2)+NULL_CHAR+chr(45)+NULL_CHAR*5)
+#                         #Check if the special character is a none shift character
+#                         if char in ['.']:
+#                             write_report(NULL_CHAR * 2 + chr(special_char_codes[char]) + NULL_CHAR * 5)
+#                         else:
+#                             write_report(chr(2) + NULL_CHAR + chr(special_char_codes[char]) + NULL_CHAR * 5)
+#                         #write_report(NULL_CHAR * 2 + chr(special_char_codes[char]) + NULL_CHAR * 5)
 #                         write_report(NULL_CHAR * 8)
 #                         print(f"Typed {char} with ASCII value {special_char_codes[char]}")
 #         # Add a small delay between lines
 #         time.sleep(0.1)
 
-# # Delay for a few seconds to ensure the system recognizes the keyboard
-# time.sleep(3)
 
-# # Press Windows key
-# write_report(chr(8) + NULL_CHAR * 7)
-# # Release Windows key
-# write_report(NULL_CHAR * 8)
-# time.sleep(1)
 
-# # Read the text file
-# with open('input.txt', 'r') as file:
-#     text = file.read()
 
-# # Simulate typing the text
-# type_text(text)
 
-# Release all keys
-write_report(NULL_CHAR * 8)
+
+
+
+
