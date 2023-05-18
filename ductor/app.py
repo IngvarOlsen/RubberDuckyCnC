@@ -122,7 +122,7 @@ time.sleep(3)
 
 # Checks if the setting to execute on project start up is true
 def check_execute_script_setting():
-    with open('settings.json', 'r') as file:
+    with open('/var/www/duck/ductor/settings.json', 'r') as file:
         settings = json.load(file)
 
     if settings.get('execute_script') and settings.get('duck_file'):
