@@ -4,6 +4,7 @@ Flask-SQLAlchemy
 flask-login
 sanix
 socketio
+eventlet
 cryptography
 pycryptodome
 pyinstaller

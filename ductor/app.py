@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, jsonify
+from flask_socketio import SocketIO
+import socket
 import json
 import time
 import os
-
 
 #Program variables
 LIST    = 1     #If LIST is 1 than complete keymap code is shown on screen
@@ -17,22 +18,9 @@ def write_report(report):
     with open('/dev/hidg0', 'rb+') as fd:
         fd.write(report.encode())
 
-# time.sleep(4)
-# #Ascii for numpad -
-# # For loop which itaretes through 5 keys at time to find the - key
-# for i in range(40,60):
-#     #write_report(chr(2)+NULL_CHAR+chr(i)+NULL_CHAR*5) ## Shift + key
-#     write_report(NULL_CHAR * 2 + chr(i) + NULL_CHAR * 5) ## Without shift
-    
-#     write_report(NULL_CHAR * 8)
-# #write_report(chr(2)+NULL_CHAR+chr(46)+NULL_CHAR*5)¨
-
-# #write_report(NULL_CHAR * 2 + chr(55) + NULL_CHAR * 5)
-# write_report(NULL_CHAR * 8)
-# TESTING Ascii code for ' is 50
-# write_report(NULL_CHAR*2+chr(50)+NULL_CHAR*5) ## Shift + key
-# write_report(NULL_CHAR * 8)
-# exit()
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)        
 
 def type_text(text):
     enter_keyword = "<enter>"
@@ -120,19 +108,24 @@ def type_text(text):
 time.sleep(3)
 
 
-# Checks if the setting to execute on project start up is true
-def check_execute_script_setting():
+# Checks if the setting to execute on project start up is true, or is called by socketio in the executeScript() function
+def check_execute_script_setting(source=None):
+    print("check_execute_script_setting")
     with open('/var/www/duck/ductor/settings.json', 'r') as file:
         settings = json.load(file)
 
-    if settings.get('execute_script') and settings.get('duck_file'):
+    #If the setting to execute on boot is true it runs, or if the function was called with socketio it runs
+    if settings.get('execute_script') and settings.get('duck_file') or source =='socketio':
         duck_file_path = os.path.join(os.path.dirname(__file__)+"/duckScripts/", settings['duck_file'])
         with open(duck_file_path, 'r') as file:
             text_to_type = file.read()
             type_text(text_to_type)
+    
+@socketio.on('execute')
+def executeScript():
+    print("Calling check_execute_script_setting() to execute script")
+    check_execute_script_setting(source='socketio')
 
-
-app = Flask(__name__)
 
 
 @app.route('/')
@@ -159,7 +152,14 @@ def save_settings():
 
 
 if __name__ == '__main__':
+    print("Trying to check settings")
+    ##check_execute_script_setting()
 
-    check_execute_script_setting()
+    ip_address = socket.gethostbyname(socket.gethostname())
+    # Print the IP address
+    print("Raspberry Pi IP address:", ip_address ,":5000")
 
-    app.run(host='0.0.0.0', port=5000)
+
+    #app.run(host='0.0.0.0', port=5000)
+    socketio.run(app)
+    

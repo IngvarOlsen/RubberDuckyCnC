@@ -1,0 +1,82 @@
+body {
+    background-color: lightcoral;
+   
+    font: normal 14px Verdana, Arial, sans-serif;
+    
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+#center {
+    flex-direction: column;
+    align-items: left;
+    justify-content: left;
+    height: 100vh;
+    text-align: left;
+}
+
+.random-hover-effect {
+    transition: transform 2.5s ease;
+    animation: random-hover-animation 6s infinite;
+}
+
+
+@keyframes random-hover-animation {
+    0% {
+        transform: none;
+    }
+    25% {
+        transform: rotate(2deg);
+    }
+    50% {
+        transform: translateX(2px) translateY(1px);
+    }
+    75% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: none;
+    }
+}
+
+
+.saveBtn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+.saveBtn:hover {
+    background-color: rgb(103, 141, 16);
+}
+
+#executeBtn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 2px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  #executeBtn:hover {
+    background-color: darkred;
+  }
