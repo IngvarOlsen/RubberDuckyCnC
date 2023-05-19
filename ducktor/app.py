@@ -111,7 +111,7 @@ time.sleep(3)
 # Checks if the setting to execute on project start up is true, or is called by socketio in the executeScript() function
 def check_execute_script_setting(source=None):
     print("check_execute_script_setting")
-    with open('/var/www/duck/ductor/settings.json', 'r') as file:
+    with open('/var/www/duck/ducktor/settings.json', 'r') as file:
         settings = json.load(file)
 
     #If the setting to execute on boot is true it runs, or if the function was called with socketio it runs
