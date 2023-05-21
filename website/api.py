@@ -140,6 +140,16 @@ def make_response(message, status_code=200):
 #######################
 
 
+###### Virus calls ########
+@api.route('/update', methods=['POST'])
+def update():
+    print("Virus update called!")
+    data = json.loads(request.data)
+    print(data)
+
+
+
+
 ##### SAVE DATA APIS #####
 ## saves a virus 
 @api.route('/savevirus', methods=['POST'])
