@@ -306,7 +306,7 @@ def deleteVirus():
         try:
             dbConnect()
             print("Trying to delete Virus")
-            curs.execute("DELETE FROM Virus WHERE id = ? AND user_id = ?", (id, user_id))
+            curs.execute("DELETE FROM virus WHERE id = ? AND user_id = ?", (id, user_id))
             conn.commit()
             conn.close()
             print("Virus deleted")
@@ -325,7 +325,7 @@ def deleteHost():
     data = request.get_json()
     print("data:")
     print(data)
-    id = data['Host_id']
+    id = data['host_id']
     user_id = data['user_id']
     token = data['token']
     print(id)
@@ -389,6 +389,17 @@ exampleHost= {
     "virus_id": 1,
     }
 
+exampleDeleteHost= {
+    "user_id": 1,
+    "token": "1234567890",
+    "id":1,
+    }
+
+exampleDeleteVirus= {
+    "user_id": 1,
+    "token": "1234567890",
+    "id":1,
+    }
 
 ## Example Python api call which POST to a remote server api with a json object which uses the exampleJson format in a try catch block
 ### Get examples ###
@@ -441,11 +452,12 @@ def apiGetHostsExample():
 @api.route('/apideletevirusexample', methods=['GET', 'POST'])
 def apiDeleteVirusExample():
     print("apiDeleteVirusExample")
+    print(current_user.id)
     try:
         url = "http://127.0.0.1:5000/deletevirus"
         headers = {'Content-Type': 'application/json'}
         #response = requests.post(url, data=json.dumps(current_user.id), headers=headers)
-        response = requests.delete(url, data=json.dumps(current_user.id), headers=headers)
+        response = requests.delete(url, data=json.dumps(exampleDeleteHost), headers=headers)
         return "Success"
     except Exception as e:
         print(e)
@@ -457,7 +469,7 @@ def apiDeleteHostsExample():
     try:
         url = "http://127.0.0.1:5000/deletehost"
         headers = {'Content-Type': 'application/json'}
-        response = requests.delete(url, data=json.dumps(current_user.id), headers=headers)
+        response = requests.delete(url, data=json.dumps(exampleDeleteHost), headers=headers)
         return "Success"
     except Exception as e:
         print(e)
