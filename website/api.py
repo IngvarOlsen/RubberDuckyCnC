@@ -120,11 +120,27 @@ def CheckKeys():
 
 
 
+def execute_query(query, params):
+    with sqlite3.connect('instance/databasen.db') as conn:
+        curs = conn.cursor()
+        curs.execute(query, params)
+        result = curs.fetchall()
+    return result
+
+def extract_data(request, keys):
+    data = json.loads(request.data)
+    return {key: data.get(key) for key in keys}
+
+def make_response(message, status_code=200):
+    return jsonify({'message': message}), status_code
+
 
 #######################
 ####### APIs ##########
 #######################
 
+
+##### SAVE DATA APIS #####
 ## saves a virus 
 @api.route('/savevirus', methods=['POST'])
 def saveVirus():
@@ -208,8 +224,9 @@ def saveHost():
         return jsonify({'message': 'token not valid'})
 
 
-## Get all virus for the user to display in virus view
 
+##### GET DATA APIS #####
+## Get all virus for the user to display in virus view
 # @login_required
 @api.route('/getvirus', methods=['GET'])
 def getvirus(userId = "1", token = "1234567890"):
@@ -223,9 +240,9 @@ def getvirus(userId = "1", token = "1234567890"):
     if token == userToken:
         try:
             dbConnect()
-            print("Trying to get virus")
+            print("Trying to get virus table data")
             #curs.execute("SELECT Image.image_name FROM Image WHERE Image.imageset_id = ? AND Job.status = ?", (imageSetId, status))
-            curs.execute("SELECT * FROM rendered_model WHERE user_id = ?", (userId))
+            curs.execute("SELECT * FROM Virus WHERE user_id = ?", (userId))
             #curs.execute("SELECT Image.image_name FROM Image INNER JOIN Job ON ? = Image.imageset_id AND Job.status = ?", (imageSetId, status))
             rows = curs.fetchall()
             #print(json.dumps( [dict(ix) for ix in rows] ))
@@ -241,6 +258,92 @@ def getvirus(userId = "1", token = "1234567890"):
 #getJobs()
 
 
+@api.route('/gethosts', methods=['GET'])
+def getHosts(userId = "1", token = "1234567890"):
+    print("getHosts")
+    # print(current_user.id)
+    # data = request.get_json()
+    # print(data)
+    # userId = data['userId']
+    # token = data['token']
+    # print(token)
+    if token == userToken:
+        try:
+            dbConnect()
+            print("Trying to get Hosts table data")
+            #curs.execute("SELECT Image.image_name FROM Image WHERE Image.imageset_id = ? AND Job.status = ?", (imageSetId, status))
+            curs.execute("SELECT * FROM Hosts WHERE user_id = ?", (userId))
+            #curs.execute("SELECT Image.image_name FROM Image INNER JOIN Job ON ? = Image.imageset_id AND Job.status = ?", (imageSetId, status))
+            rows = curs.fetchall()
+            #print(json.dumps( [dict(ix) for ix in rows] ))
+            conn.close()
+            print("jsondump")
+            print(json.dumps(rows))
+            return json.loads(json.dumps(rows))
+        except Exception as e:
+            print(e)
+            return jsonify({'message': e})
+    else:
+        return jsonify({'message': 'token not valid'})
+#getJobs()
+
+
+####### DELETE APIS ##########
+
+@api.route('/deletevirus', methods=['DELETE'])
+@login_required
+def deleteVirus():
+    print("deleteVirus called")
+    data = request.get_json()
+    print("data:")
+    print(data)
+    id = data['virus_id']
+    user_id = data['user_id']
+    token = data['token']
+    print(id)
+    print(token)
+    if token == userToken:
+        try:
+            dbConnect()
+            print("Trying to delete Virus")
+            curs.execute("DELETE FROM Virus WHERE id = ? AND user_id = ?", (id, user_id))
+            conn.commit()
+            conn.close()
+            print("Virus deleted")
+            flash('Virus deleted!', category='success')
+            return jsonify({'message': 'success'})
+        except Exception as e:
+            return jsonify({'message': e})
+    else:
+        return jsonify({'message': 'token not valid'})
+
+
+@api.route('/deletehost', methods=['DELETE'])
+@login_required
+def deleteHost():
+    print("deleteHost called")
+    data = request.get_json()
+    print("data:")
+    print(data)
+    id = data['Host_id']
+    user_id = data['user_id']
+    token = data['token']
+    print(id)
+    print(token)
+    if token == userToken:
+        try:
+            dbConnect()
+            print("Trying to delete Host")
+            curs.execute("DELETE FROM Hosts WHERE id = ? AND user_id = ?", (id, user_id))
+            conn.commit()
+            conn.close()
+            print("Host deleted")
+            flash('Host deleted!', category='success')
+            return jsonify({'message': 'success'})
+        except Exception as e:
+            return jsonify({'message': e})
+    else:
+        return jsonify({'message': 'token not valid'})
 
 
 
@@ -250,16 +353,12 @@ def getvirus(userId = "1", token = "1234567890"):
 
 
 
-
-
-
-
+########## Testing area ############
 
 
 ## Json examples ##
 
 exampleUser = {
-
     "user_id": 1,
     "token": "1234567890",
     "email ": "tester@tester.com",
@@ -292,6 +391,7 @@ exampleHost= {
 
 
 ## Example Python api call which POST to a remote server api with a json object which uses the exampleJson format in a try catch block
+### Get examples ###
 @api.route('/apivirussendexample', methods=['GET', 'POST'])
 def apiVirusExample():
     try:
@@ -313,8 +413,55 @@ def apiHostsExample():
     except Exception as e:
         print(e)
         return "Error"
+### Get examples ###
+@api.route('/apigetvirusexample', methods=['GET', 'POST'])
+def apiGetVirusExample():
+    try:
+        url = "http://127.0.0.1:5000/getvirus"
+        headers = {'Content-Type': 'application/json'}
+        #response = requests.post(url, data=json.dumps(current_user.id), headers=headers)
+        response = requests.get(url, data=json.dumps(current_user.id), headers=headers)
+        return "Success"
+    except Exception as e:
+        print(e)
+        return "Error"
+    
+@api.route('/apigethostsexample', methods=['GET', 'POST'])
+def apiGetHostsExample():
+    try:
+        url = "http://127.0.0.1:5000/gethosts"
+        headers = {'Content-Type': 'application/json'}
+        response = requests.get(url, data=json.dumps(current_user.id), headers=headers)
+        return "Success"
+    except Exception as e:
+        print(e)
+        return "Error"   
 
-
+### Delete examples ###
+@api.route('/apideletevirusexample', methods=['GET', 'POST'])
+def apiDeleteVirusExample():
+    print("apiDeleteVirusExample")
+    try:
+        url = "http://127.0.0.1:5000/deletevirus"
+        headers = {'Content-Type': 'application/json'}
+        #response = requests.post(url, data=json.dumps(current_user.id), headers=headers)
+        response = requests.delete(url, data=json.dumps(current_user.id), headers=headers)
+        return "Success"
+    except Exception as e:
+        print(e)
+        return "Error"
+    
+@api.route('/apideletehostsexample', methods=['GET', 'POST'])
+def apiDeleteHostsExample():
+    print("apiDeleteHostsExample")
+    try:
+        url = "http://127.0.0.1:5000/deletehost"
+        headers = {'Content-Type': 'application/json'}
+        response = requests.delete(url, data=json.dumps(current_user.id), headers=headers)
+        return "Success"
+    except Exception as e:
+        print(e)
+        return "Error"   
 
 
 
