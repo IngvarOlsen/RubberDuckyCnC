@@ -15,11 +15,9 @@ class User(db.Model, UserMixin):
 
 class Virus(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(150), unique=True)
     virus_type = db.Column(db.String(150))
     name = db.Column(db.String(500))
     heartbeat_rate = db.Column(db.String(500))
-    subscription_status = db.Column(db.String(500))
     user_id = db.Column(db.String(150))
 
 class Hosts(db.Model, UserMixin):

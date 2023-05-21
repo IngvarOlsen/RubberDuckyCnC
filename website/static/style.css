@@ -381,3 +381,29 @@
     background: #2b912b;
     width: 100%;
   }
+
+  
+.random-hover-effect {
+  padding-top:30px;
+  transition: transform 2.5s ease;
+  animation: random-hover-animation 6s infinite;
+}
+
+
+@keyframes random-hover-animation {
+  0% {
+      transform: none;
+  }
+  25% {
+      transform: rotate(2deg);
+  }
+  50% {
+      transform: translateX(2px) translateY(1px);
+  }
+  75% {
+      transform: scale(1.02);
+  }
+  100% {
+      transform: none;
+  }
+}
