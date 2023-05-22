@@ -36,7 +36,6 @@ def generateExe(source_file):
         print(f"PyInstaller failed with error code: {e.returncode}")
         return "Failed to compile"
 
-
 def generateScript(user_id, token, virus_type, name, heartbeat_rate):
     # Fill in the template with the provided parameters
     filled_template = template.format(
@@ -51,14 +50,13 @@ def generateScript(user_id, token, virus_type, name, heartbeat_rate):
     with open('generated_script.py', 'w') as f:
         f.write(filled_template)
 
-    # Write the filled-in template to a new Python script
+    # Write the filled-in template to a new Python script (duplicate line)
     with open('generated_script.py', 'w') as f:
         f.write(filled_template)
 
-#generateScript(1, '1234567890', 'Silent', 'TestVirus1', '1h')
+# generateScript(1, '1234567890', 'Silent', 'TestVirus1', '1h')
 # Wine compile test
-generateExe("generated_script.py")
-
+# generateExe("generated_script.py")
 
 # if __name__ == '__main__':
 #     parser = argparse.ArgumentParser(description='Generate a Python script from parameters')
