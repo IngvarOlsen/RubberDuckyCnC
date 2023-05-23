@@ -149,9 +149,15 @@ def update():
     print("Virus update called!")
     data = json.loads(request.data)
     print(data)
+    try:
+        return jsonify({'message': 'success'})  # Return a valid response
+    except Exception as e:
+        print(e)
+        return jsonify({'message': str(e)})  # Return a v
+
+#####
 
 ###### Create virus ######
-@login_required
 @login_required
 @api.route('/virusmake', methods=['GET', 'POST'])
 def virusmake():
@@ -430,6 +436,17 @@ exampleDeleteVirus= {
 ## Example Python api call which POST to a remote server api with a json object which uses the exampleJson format in a try catch block
 ### Get examples ###
 @api.route('/apivirussendexample', methods=['GET', 'POST'])
+def apiVirusExample():
+    try:
+        url = "http://127.0.0.1:5000/savevirus"
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(url, data=json.dumps(exampleVirus), headers=headers)
+        return "Success"
+    except Exception as e:
+        print(e)
+        return "Error"
+
+@api.route('/apiupdate', methods=['GET', 'POST'])
 def apiVirusExample():
     try:
         url = "http://127.0.0.1:5000/savevirus"

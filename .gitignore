@@ -5,6 +5,7 @@
 
 website/static/sftp/images/*
 website/static/sftp/models/*
+virus/testapp/*
 website/__pycache__/*
 build/*
 dist/*
