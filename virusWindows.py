@@ -3,14 +3,27 @@ import argparse
 
 # Boilerplate template with placeholders for parameters
 template = """
-import os
+import pkgutil
 import requests
+import tempfile
+import os
+
+# Read the cert data
+cert_data = pkgutil.get_data('certifi', 'cacert.pem')
+
+# Write the cert data to a temporary file
+handle = tempfile.NamedTemporaryFile(delete=False)
+handle.write(cert_data)
+handle.flush()
+
+# Set the temporary file name to an environment variable for the requests package
+os.environ['REQUESTS_CA_BUNDLE'] = handle.name
 
 def display_message(user_id, virus_type):
     os.system('echo You have been hacked by user: {user_id} with virus: {virus_type}! (Not really) && pause'.format(user_id, virus_type))
 
 def send_request(user_id, token, virus_type, name, heartbeat_rate):
-    url = 'http://129.151.211.93/update'
+    url = 'http://129.151.211.93:5000/update'
     data = {{
         'user_id': '{user_id}',
         'token': '{token}',
@@ -19,9 +32,17 @@ def send_request(user_id, token, virus_type, name, heartbeat_rate):
         'heartbeat_rate': '{heartbeat_rate}',
     }}
     response = requests.post(url, json=data)
+    logging.debug(f'Response status code: {response.status_code}')
+    logging.debug(f'Response content: {response.content}')
+    os.system('echo {response.status_code} , {response.content} && pause'.format(response.status_code, response.content))
+    s.system('echo cmd testt && pause')
 
-display_message(user_id='{user_id}', virus_type='{virus_type}')
+
 send_request(user_id='{user_id}', token='{token}', virus_type='{virus_type}', name='{name}', heartbeat_rate='{heartbeat_rate}')
+display_message(user_id='{user_id}', virus_type='{virus_type}')
+
+# Clean up the temp file
+os.remove(handle.name)
 """
 
 def test():
@@ -30,7 +51,7 @@ def test():
 def generateExe(source_file):
     # Call PyInstaller to compile the script to an exe
     try:
-        subprocess.check_call(['python', '-m', 'PyInstaller', '--onefile', '--debug=all', '--distpath', '/var/www/rubberduck/dist', source_file])
+        subprocess.check_call(['python', '-m', 'PyInstaller', '--onefile', '--debug=all', '--distpath', '/dist', '--hidden-import=requests', '--hidden-import=stringprep', source_file])
         return "Success"
     except subprocess.CalledProcessError as e:
         print(f"PyInstaller failed with error code: {e.returncode}")
