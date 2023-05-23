@@ -447,9 +447,9 @@ def apiVirusExample():
         return "Error"
 
 @api.route('/apiupdate', methods=['GET', 'POST'])
-def apiVirusExample():
+def apiApiExample():
     try:
-        url = "http://127.0.0.1:5000/savevirus"
+        url = "http://127.0.0.1:5000/update"
         headers = {'Content-Type': 'application/json'}
         response = requests.post(url, data=json.dumps(exampleVirus), headers=headers)
         return "Success"
