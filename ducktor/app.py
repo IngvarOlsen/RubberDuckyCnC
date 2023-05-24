@@ -4,7 +4,8 @@ import socket
 import json
 import time
 import os
-
+from flask_cors import CORS
+import subprocess
 #Program variables
 LIST    = 1     #If LIST is 1 than complete keymap code is shown on screen
 EXECUTE    = 1     #If EXECUTE is 1 than complete keymap code is send to the HID device and executed
@@ -23,9 +24,23 @@ def write_report(report):
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)        
+socketio = SocketIO(app)
+
+def is_usb_connected():
+    try:
+        # Try writing a test report to /dev/hidg0
+        with open('/dev/hidg0', 'wb') as fd:
+            fd.write(b'\x00')  # Write a test report
+
+        # If the write operation succeeds, assume USB is connected
+        return True
+    except OSError:
+        # If an OSError occurs, assume USB is not connected
+        return False
+print(is_usb_connected())
 
 def type_text(text, speed):
+    print("type_text called with" + text + " speed: " + str(speed))
     enter_keyword = "<enter>"
     windows_keyword = "<windows>"
     windowsR_keyword = "<windows+r>"
@@ -56,7 +71,8 @@ def type_text(text, speed):
             break
         else:
             for char in line:
-                time.sleep(speed / 1000)
+                #time.sleep(speed / 1000)
+                time.sleep(0.05)
                 #Check for space
                 
                 if char.isalpha():
@@ -110,6 +126,8 @@ def type_text(text, speed):
                         print(f"Typed {char} with ASCII value {special_char_codes[char]}")
         # Add a small delay between lines
         time.sleep(0.1)
+    global execute_script_flag
+    execute_script_flag = False 
 
 # Delay for a few seconds to ensure the system recognizes the keyboard
 time.sleep(3)
@@ -119,25 +137,30 @@ time.sleep(3)
 def check_execute_script_setting(source=None):
     print("check_execute_script_setting")
     with open('/var/www/duck/ducktor/settings.json', 'r') as file:
+        print("opened settings")
         settings = json.load(file)
 
     #If the setting to execute on boot is true it runs, or if the function was called with socketio it runs
-    if settings.get('execute_script') and settings.get('duck_file') or source =='socketio':
+    if settings.get('execute_script') and settings.get('duck_file') and is_usb_connected() or source =='socketio' and is_usb_connected():
+        print("Check settings if statement true")
         duck_file_path = os.path.join(os.path.dirname(__file__)+"/duckScripts/", settings['duck_file'])
         with open(duck_file_path, 'r') as file:
             text_to_type = file.read()
-
-            if settings.get('prompt_loop'):
-                #Use with care
-                while settings.get('prompt_loop'):
-                    type_text(text_to_type, settings.get('speed'))
-                else:
-                    type_text(text_to_type, settings.get('speed'))
-                    #type_text(text_to_type)
+            #Use with care
+            print("Prompt setting loop is= " + str(settings.get('prompt_loop')))
+            while settings.get('prompt_loop') and is_usb_connected():
+                print("Looping prompt")
+                type_text(text_to_type, settings.get('speed'))
+                time.sleep(1)  # Add a small delay to avoid high CPU usage
+            else:
+                print("Single time prompt")
+                type_text(text_to_type, settings.get('speed'))
+                #type_text(text_to_type)
     
 
 @socketio.on('execute')
 def executeScript():
+    print("Execute script called")
     global execute_script_flag
     if not execute_script_flag:
         execute_script_flag = True
@@ -164,6 +187,11 @@ def save_settings():
 
     if 'duck_file' in request.form:
         settings['duck_file'] = request.form['duck_file']
+    
+    if 'prompt_loop' in request.form:
+        settings['prompt_loop'] = request.form['duck_file']
+    if 'speed' in request.form:
+        settings['speed'] = request.form['speed']
 
     with open('settings.json', 'w') as file:
         json.dump(settings, file)
@@ -178,6 +206,8 @@ if __name__ == '__main__':
     ip_address = socket.gethostbyname(socket.gethostname())
     # Print the IP address
     print("Raspberry Pi IP address:", ip_address ,":5000")
+
+    CORS(app, resources={r"/*":{"origins":"*"}})
 
 
     #app.run(host='0.0.0.0', port=5000)

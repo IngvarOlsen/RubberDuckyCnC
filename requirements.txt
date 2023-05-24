@@ -8,3 +8,4 @@ eventlet
 cryptography
 pycryptodome
 pyinstaller
+flask-cors
