@@ -12,6 +12,9 @@ EXECUTE    = 1     #If EXECUTE is 1 than complete keymap code is send to the HID
 #Variables
 NULL_CHAR = chr(0)
 
+# Flag to control execution of `check_execute_script_setting`   
+execute_script_flag = False 
+
 #Functions
 #Create write_report function t write HID codes to the HID Keyboard
 def write_report(report):
@@ -22,16 +25,20 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)        
 
-def type_text(text):
+def type_text(text, speed):
     enter_keyword = "<enter>"
     windows_keyword = "<windows>"
     windowsR_keyword = "<windows+r>"
     end_keyword = "<end>"
+    pause500 = "<500>"
+    pause1000 = "<1000>"
+    pause2000 = "<2000>"
+    pause3000 = "<3000>"
     enter_code = chr(40)  # ASCII code for Enter key
 
     #Custom commands
     for line in text.splitlines():
-        time.sleep(0.4)
+        time.sleep(0.3)
         line = line.strip()
         if line == enter_keyword:
             # Press Enter key
@@ -49,7 +56,7 @@ def type_text(text):
             break
         else:
             for char in line:
-                time.sleep(0.2)
+                time.sleep(speed / 1000)
                 #Check for space
                 
                 if char.isalpha():
@@ -119,14 +126,25 @@ def check_execute_script_setting(source=None):
         duck_file_path = os.path.join(os.path.dirname(__file__)+"/duckScripts/", settings['duck_file'])
         with open(duck_file_path, 'r') as file:
             text_to_type = file.read()
-            type_text(text_to_type)
+
+            if settings.get('prompt_loop'):
+                #Use with care
+                while settings.get('prompt_loop'):
+                    type_text(text_to_type, settings.get('speed'))
+                else:
+                    type_text(text_to_type, settings.get('speed'))
+                    #type_text(text_to_type)
     
+
 @socketio.on('execute')
 def executeScript():
-    print("Calling check_execute_script_setting() to execute script")
-    check_execute_script_setting(source='socketio')
-
-
+    global execute_script_flag
+    if not execute_script_flag:
+        execute_script_flag = True
+        print("Calling check_execute_script_setting() to execute script")
+        check_execute_script_setting(source='socketio')
+    else:
+        print("Script execution already in progress")
 
 @app.route('/')
 def settings():
@@ -136,7 +154,9 @@ def settings():
 def save_settings():
     settings = {
         'execute_script': False,
-        'duck_file': ''
+        'duck_file': '',
+        'prompt_loop':False,
+        'speed': 500,
     }
 
     if 'execute_script' in request.form:
@@ -161,5 +181,5 @@ if __name__ == '__main__':
 
 
     #app.run(host='0.0.0.0', port=5000)
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0")
     

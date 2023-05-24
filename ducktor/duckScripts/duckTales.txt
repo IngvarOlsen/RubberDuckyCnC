@@ -1,0 +1,4 @@
+<windows+r>
+powershell Start-Process chrome https://www.youtube.com/watch?v=SecZ8sfXFFE&t=05s
+<enter>
+<end>
