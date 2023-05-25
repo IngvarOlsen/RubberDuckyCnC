@@ -20,6 +20,8 @@ from Crypto.PublicKey import RSA
 # Import viris compiler script
 import virusCompiler as virus
 
+## Ignore temp lack of ssl
+os.environ['CURL_CA_BUNDLE'] = ''
 
 
 
