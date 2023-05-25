@@ -198,18 +198,30 @@ def save_settings():
 
     return jsonify({'message': 'Settings saved successfully'})
 
+# Error log generation
+def write_log(log):
+    with open('/var/www/duck/ducktor/flask_startup_log.json', 'w') as file:
+        json.dump(log, file)
 
 if __name__ == '__main__':
-    print("Trying to check settings")
-    ##check_execute_script_setting()
+    log = {}
+    try:
+        print("Trying to check settings")
+        ##check_execute_script_setting()
+        ip_address = socket.gethostbyname(socket.gethostname())
+        # Print the IP address
+        print("Raspberry Pi IP address:", ip_address ,":5000")
+        #In order for socket io to work we have to enable cross origin, not dangerous as its on localhost
+        CORS(app, resources={r"/*":{"origins":"*"}})
+        #app.run(host='0.0.0.0', port=5000)
+        log['status'] = "starting"
+        log['message'] = "Starting flask app"
+        write_log(log)
+        socketio.run(app, host="0.0.0.0", port="5000",allow_unsafe_werkzeug=True)
+    except Exception as e:
+        log['status'] = 'error'
+        log['message'] = str(e)
 
-    ip_address = socket.gethostbyname(socket.gethostname())
-    # Print the IP address
-    print("Raspberry Pi IP address:", ip_address ,":5000")
+        write_log(log)
 
-    CORS(app, resources={r"/*":{"origins":"*"}})
-
-
-    #app.run(host='0.0.0.0', port=5000)
-    socketio.run(app, host="0.0.0.0")
     
