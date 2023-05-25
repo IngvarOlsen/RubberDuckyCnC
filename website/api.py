@@ -1,5 +1,5 @@
 import requests
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify, send_file
 from flask_login import login_required, current_user
 #from .models import Note, ImageSet, Image
 from .models import Virus, Hosts
