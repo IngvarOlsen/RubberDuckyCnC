@@ -198,10 +198,13 @@ def save_settings():
 
     return jsonify({'message': 'Settings saved successfully'})
 
-# Error log generation
+# Log generation
 def write_log(log):
-    with open('/var/www/duck/ducktor/flask_startup_log.json', 'w') as file:
-        json.dump(log, file)
+    try:
+        with open('/var/www/duck/ducktor/flask_startup_log.json', 'w') as file:
+            json.dump(log, file)
+    except Exception as e:
+        print(f"Error writing log file: {e}")
 
 if __name__ == '__main__':
     log = {}
