@@ -139,7 +139,7 @@ def test():
 def generateExe(source_file):
     # Call PyInstaller to compile the script to an exe
     try:
-        subprocess.check_call(['python', '-m','PyInstaller', '--debug=all', '--distpath', '/dist', '--hidden-import=requests', '--hidden-import=stringprep', source_file])
+        subprocess.check_call(['python', '-m','PyInstaller', '--debug=all', '--distpath', '/dist', '--hidden-import=requests', '--hidden-import=stringprep' , '--onefile' , source_file])
         return "Success"
     except subprocess.CalledProcessError as e:
         print(f"PyInstaller failed with error code: {e.returncode}")
