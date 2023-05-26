@@ -26,6 +26,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
+#Checks if the USB is connected by writing \x00 to he USB, if the write was successfull it means the USB is connected
+#Returns True or False
 def is_usb_connected():
     try:
         # Try writing a test report to /dev/hidg0
@@ -39,12 +41,16 @@ def is_usb_connected():
         return False
 print(is_usb_connected())
 
+# Parses the input into 8bits input which can then be sent to write_report(report) for write into the USB connection
+# It has multiple predefined keywords for special actions, and supports Danish keyboard only at the moment only
+# Had to map keys manually due to some kind of bug when writing from the Pi Zero to Windows 
 def type_text(text, speed):
     print("type_text called with" + text + " speed: " + str(speed))
     enter_keyword = "<enter>"
     windows_keyword = "<windows>"
     windowsR_keyword = "<windows+r>"
     end_keyword = "<end>"
+    #Speed codes not used atm
     pause500 = "<500>"
     pause1000 = "<1000>"
     pause2000 = "<2000>"
@@ -157,7 +163,7 @@ def check_execute_script_setting(source=None):
                 type_text(text_to_type, settings.get('speed'))
                 #type_text(text_to_type)
     
-
+# Listens after the execute emit from Javascript frontend
 @socketio.on('execute')
 def executeScript():
     print("Execute script called")
@@ -169,10 +175,12 @@ def executeScript():
     else:
         print("Script execution already in progress")
 
+# Returns Pi Zero landing page on /        
 @app.route('/')
 def settings():
     return render_template('settings.html')
 
+# Save settings via form from POST settings.html
 @app.route('/save_settings', methods=['POST'])
 def save_settings():
     settings = {
@@ -198,7 +206,7 @@ def save_settings():
 
     return jsonify({'message': 'Settings saved successfully'})
 
-# Log generation
+# Log generation, had some start on boot problems which had to be debuged this way
 def write_log(log):
     try:
         with open('/var/www/duck/ducktor/flask_startup_log.json', 'w') as file:
@@ -206,6 +214,7 @@ def write_log(log):
     except Exception as e:
         print(f"Error writing log file: {e}")
 
+        
 if __name__ == '__main__':
     log = {}
     try:
@@ -220,8 +229,10 @@ if __name__ == '__main__':
         log['status'] = "starting"
         log['message'] = "Starting flask app"
         write_log(log)
+        # allow_unsafe_werkzeug=True is for socketio to work on boot
         socketio.run(app, host="0.0.0.0", port="5000",allow_unsafe_werkzeug=True)
     except Exception as e:
+        #If errors prints out the error into the json log on the Pi
         log['status'] = 'error'
         log['message'] = str(e)
 
