@@ -10,7 +10,7 @@ import pkgutil
 import requests
 import tempfile
 import os
-# import getpass
+import getpass
 import platform
 import json
 import subprocess
