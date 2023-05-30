@@ -15,10 +15,10 @@ from collections import OrderedDict
 import traceback
 # from . import crypto
 import base64
-from cryptography.hazmat.primitives.serialization import Encoding
-from Crypto.PublicKey import RSA
+# from cryptography.hazmat.primitives.serialization import Encoding
+# from Crypto.PublicKey import RSA
 # Import viris compiler script
-import virusCompiler as virus
+import virusWindows as virus
 
 ## Ignore temp lack of ssl
 os.environ['CURL_CA_BUNDLE'] = ''
@@ -37,91 +37,6 @@ def dbConnect():
     global curs
     curs = conn.cursor()
 
-
-
-### Crypto ###
-## Checks if public key from user public_key from the sql database matches in the private key
-def checkKeyMatch(privateKey):
-    dbConnect()
-    curs.execute("SELECT public_key FROM user WHERE id = ?", (str(current_user.id)))
-    publicKey = curs.fetchone()
-    conn.close()
-    print(publicKey)
-    keyCheck = crypto.checkKeysFromBytes(privateKey, publicKey)
-    print(keyCheck)
-
-
-    
-
-## Saves public key to user in sqlite db from ID
-@api.route('/savepublickey', methods=['POST', 'GET'])
-@login_required
-def savePublicKey(id = 1):
-    print("savePublicKey called")
-    # data = request.get_json()
-    # print(data)
-    # id = data['id']
-    # privateKey = data['privateKey']
-
-    # Gets back a tuple with (secret, public) key and encodes it to utf-8 so it can be saved to the db
-    # Obtain the RsaKey object
-    key = crypto.readKeysFromFile()[1]
-    key = key.publickey().export_key()
-    print(key)
-
-    # Export the key as PEM-formatted data
-    # public_key_pem = key.export_key(format='PEM')
-
-    # # Encode the raw data as a base64 string
-    # public_key_b64 = base64.b64encode(public_key_pem).decode('utf-8')
-
-
-    # print(public_key_b64)
-    # print(id)
-    #print(public_key_b64)
-    try:
-        dbConnect()
-        curs.execute("UPDATE User SET public_key = ? WHERE id = ?", (key, id))
-        conn.commit()
-        conn.close()
-        return jsonify({'message': 'success'})
-    except Exception as e:
-        return jsonify({'message': e})
-
-## Saves public key to user in sqlite db from ID
-@api.route('/getpublickey', methods=['POST', 'GET'])
-@login_required
-def getPublicKeyAndDecode():
-    dbConnect()
-    curs.execute("SELECT public_key FROM user WHERE id = ?", (str(current_user.id)))
-    rawKey = curs.fetchone()[0]
-    conn.close()
-    print(rawKey)
-    key = RSA.import_key(rawKey)
-
-    # Decode the encoded key
-    #decoded_key = base64.b64decode(key)
-
-    # Load the decoded key data into a key object
-    #public_key = RSA.import_key(key)
-
-    # # Use the key object to perform operations, such as encrypting data
-    # data = b"..."
-    # encrypted_data = public_key.encrypt(data, 32)[0]
-    # print(key)
-    
-    # Gives error if endpoint does not expect RSA key
-    return key
-
-## Checks key match from private key and public key
-@api.route('/keycheck', methods=['POST', 'GET'])
-@login_required
-def CheckKeys():
-    publiKey = getPublicKeyAndDecode()
-    privateKey = crypto.readKeysFromFile()[0]
-    keyCheck = crypto.checkKeysFromBytes(privateKey, publiKey)
-    print(keyCheck)
-    return keyCheck
 
 
 
@@ -783,7 +698,121 @@ def getRenderById(renderId, token = "1234567890"):
 #getJobs()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+### Crypto ###
+## Checks if public key from user public_key from the sql database matches in the private key
+# def checkKeyMatch(privateKey):
+#     dbConnect()
+#     curs.execute("SELECT public_key FROM user WHERE id = ?", (str(current_user.id)))
+#     publicKey = curs.fetchone()
+#     conn.close()
+#     print(publicKey)
+#     keyCheck = crypto.checkKeysFromBytes(privateKey, publicKey)
+#     print(keyCheck)
+
+
+    
+
+## Saves public key to user in sqlite db from ID
+# @api.route('/savepublickey', methods=['POST', 'GET'])
+# @login_required
+# def savePublicKey(id = 1):
+#     print("savePublicKey called")
+#     # data = request.get_json()
+#     # print(data)
+#     # id = data['id']
+#     # privateKey = data['privateKey']
+
+#     # Gets back a tuple with (secret, public) key and encodes it to utf-8 so it can be saved to the db
+#     # Obtain the RsaKey object
+#     key = crypto.readKeysFromFile()[1]
+#     key = key.publickey().export_key()
+#     print(key)
+
+#     # Export the key as PEM-formatted data
+#     # public_key_pem = key.export_key(format='PEM')
+
+#     # # Encode the raw data as a base64 string
+#     # public_key_b64 = base64.b64encode(public_key_pem).decode('utf-8')
+
+
+#     # print(public_key_b64)
+#     # print(id)
+#     #print(public_key_b64)
+#     try:
+#         dbConnect()
+#         curs.execute("UPDATE User SET public_key = ? WHERE id = ?", (key, id))
+#         conn.commit()
+#         conn.close()
+#         return jsonify({'message': 'success'})
+#     except Exception as e:
+#         return jsonify({'message': e})
+
+## Saves public key to user in sqlite db from ID
+# @api.route('/getpublickey', methods=['POST', 'GET'])
+# @login_required
+# def getPublicKeyAndDecode():
+#     dbConnect()
+#     curs.execute("SELECT public_key FROM user WHERE id = ?", (str(current_user.id)))
+#     rawKey = curs.fetchone()[0]
+#     conn.close()
+#     print(rawKey)
+#     key = RSA.import_key(rawKey)
+
+#     # Decode the encoded key
+#     #decoded_key = base64.b64decode(key)
+
+#     # Load the decoded key data into a key object
+#     #public_key = RSA.import_key(key)
+
+#     # # Use the key object to perform operations, such as encrypting data
+#     # data = b"..."
+#     # encrypted_data = public_key.encrypt(data, 32)[0]
+#     # print(key)
+    
+#     # Gives error if endpoint does not expect RSA key
+#     return key
+
+# ## Checks key match from private key and public key
+# @api.route('/keycheck', methods=['POST', 'GET'])
+# @login_required
+# def CheckKeys():
+#     publiKey = getPublicKeyAndDecode()
+#     privateKey = crypto.readKeysFromFile()[0]
+#     keyCheck = crypto.checkKeysFromBytes(privateKey, publiKey)
+#     print(keyCheck)
+#     return keyCheck
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # # @api.route('/getImages', methods=['POST'])
+
 # def getImages(user_id="1",token="1234567890",imageSetId=""):
     
 #     if token == userToken:

@@ -10,7 +10,7 @@ import pkgutil
 import requests
 import tempfile
 import os
-import getpass
+# import getpass
 import platform
 import json
 import subprocess
@@ -94,15 +94,15 @@ if info:
 
 
 # Read the cert data
-cert_data = pkgutil.get_data('certifi', 'cacert.pem')
+# cert_data = pkgutil.get_data('certifi', 'cacert.pem')
 
 # Write the cert data to a temporary file
-handle = tempfile.NamedTemporaryFile(delete=False)
-handle.write(cert_data)
-handle.flush()
+# handle = tempfile.NamedTemporaryFile(delete=False)
+# handle.write(cert_data)
+# handle.flush()
 
 # Set the temporary file name to an environment variable for the requests package
-os.environ['REQUESTS_CA_BUNDLE'] = handle.name
+# os.environ['REQUESTS_CA_BUNDLE'] = handle.name
 
 def display_message(user_id, virus_type):
     os.system('echo You have been hacked by user: {user_id} with virus: {virus_type}! (Not really) && pause'.format(user_id, virus_type))
