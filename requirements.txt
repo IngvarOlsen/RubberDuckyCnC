@@ -1,4 +1,3 @@
-wine
 flask
 Flask-SQLAlchemy
 flask-login
