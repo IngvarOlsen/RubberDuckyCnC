@@ -16,7 +16,7 @@ The python file can be called before "exit 0" in the /etc/rc.local file after th
 
 Also secrets are not so secret in this project atm, propper .env file will be made.
 
-Files with "_old." are files which is as they were as the project was handed in and have been made as a copy to continue development.
+Files with "_old." are files which is as they were as the project was handed in and have been made as a copy to continue development, and will be deleted after our exam.
 
 ## Requirements
 
