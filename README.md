@@ -8,7 +8,7 @@ School IoT project where we were building a rubberduck(Bad USB) with a Raspberry
 
 Main server is main.py and the Rubberduck solution is inside the ducktor folder, and is run with app.py
 
-The raspberry Pi must also have been set up as a HID Gadget and the app.py run on boot.
+The raspberry Pi must also have been set up as a HID Gadget and the app.py run on boot. The App.py also most likely only works with Danish keyboards, and is not fully mapped. Encountered a problem where the keys from the danish Ubuntu keyboard was offset from the Danish keyboard on the target computer so had to do some manual mapping and only mapped the keys we are using for the rubberduck scripts.
 
 Tutorial for setting up Pi as HID Gadget: https://randomnerdtutorials.com/raspberry-pi-zero-usb-keyboard-hid/
 
