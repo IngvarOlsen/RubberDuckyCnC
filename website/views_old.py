@@ -24,35 +24,90 @@ def home():
     cwd = os.getcwd()
     print(cwd)
 
+    
+    # imageSets = api.getImages(str(current_user.id))
+    # print(imageSets)
+    ## Convert the SQL data to json so each got a key and value
+    # objects_list = []
+    # for image in imageSets:
+    #     d = collections.OrderedDict()
+    #     d['image_set_id'] = image[0][4]
+    #     #d['image_name'] = image[2]
+    #     objects_list.append(d)
+
+    # imagesJson = json.dumps(objects_list)
+    # print(imagesJson)
+
+
+
+    ## Gets all users imagesets and images in a SQL Query and dumps it to json
+    # imageSets = ImageSet.query.filter_by(user_id=current_user.id).all()
+    # for images in imageSets:
+    #     images = Image.query.filter_by(imageset_id=imageSet.id).all()
+    #     images.images = images
+    # print(json.dump(images))
+    
+
+    # imageSets = os.listdir('website/static/imagesets')
+    # imageSets = ['imagesets/' + file for file in imageSets]
+    ## image sorting by start image name id into different lists in a dictionary
+    # imageSetsList = []
+    # for imageSet in imageSets:
+    #     imageSetId = imageSet.split('_')[0]
+    #     if imageSetId not in imageSetsList:
+    #         imageSetsList[imageSetId] = [imageSetId]
+    #     imageSetsList.append(imageSet)
+    # print(imageSetsList)
+
+    # imageSetsDict = {}
+    # for imageSet in imageSets:
+    #     imageSetId = imageSet.split('_')[0]
+    #     if imageSetId not in imageSetsDict:
+    #         imageSetsDict[imageSetId] = []
+    #     imageSetsDict[imageSetId].append(imageSet)
+    # print(imageSetsDict)
+
+    # ## Splitting up dictionary into lists
+    # imageSetsList = []
+    # for key, value in imageSetsDict.items():
+    #     imageSetsList.append(value)
+    # print(imageSetsList)
+
+    # imageSetsDict = {}
+    # for imageSet in imageSets:
+    #     startImage = imageSet.split('_')[0]
+    #     if startImage in imageSetsDict:
+    #         imageSetsDict[startImage].append(imageSet)
+    #         print(imageSetsDict)
+    #     else:
+    #         imageSetsDict[startImage] = [imageSet]
+    #         print(imageSetsDict)
+    # if request.method == 'POST':
+    #     note = request.form.get('note')
+
+    #     if len(note) < 1:
+    #         flash('Note is too short!', category='error')
+    #     else:
+    #         new_note = Note(data=note, user_id=current_user.id)
+    #         db.session.add(new_note)
+    #         db.session.commit()
+    #         flash('Note added!', category='success')
+
+    ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
+    ## return render_template("home.html", user=current_user, imageSets = imageSets)
     return render_template("home.html", user=current_user)
 
 
-@views.route('/hosts', methods=['GET', 'POST'])
-@login_required
-def hosts():
-    cwd = os.getcwd()
-    print(cwd)
-    print(current_user.id)
-    ## Gets all Jobs from the Job table 
-    # jobsData = api.getJobs(str(current_user.id))
-    #dataToHtml = api.getHosts(str(current_user.id), "1234567890") #In real
-    dataToSend = api.getHosts() # debug for user1
-    print(dataToSend)
-#     print(rendersData)
+# @views.route('/hosts', methods=['GET', 'POST'], endpoint='hosts')
+# @login_required
+# def hosts():
+#     cwd = os.getcwd()
+#     print(cwd)
+#     print(current_user.id)
+#     ## Gets all Jobs from the Job table 
+#     # jobsData = api.getJobs(str(current_user.id))
 
-#     ##return render_template("home.html", user=current_user, imageSetsList = imageSetsList)
-    return render_template("home.html", user=current_user, dataToHtml = dataToSend)
 
-@views.route('/virus', methods=['GET', 'POST'])
-@login_required
-def virus():
-    cwd = os.getcwd()
-    print(cwd)
-    print(current_user.id)
-    dataToSend = api.getVirus() # debug for user1
-    print(dataToSend)
-
-    return render_template("virus.html", user=current_user, dataToHtml = dataToSend)
 
     
 #     # imageSets = api.getImages(str(current_user.id))
@@ -83,7 +138,14 @@ def virus():
 #     return render_template("home.html", user=current_user)
 
 
+@views.route('/virus', methods=['GET', 'POST'])
+@login_required
+def hosts():
+    cwd = os.getcwd()
+    print(cwd)
+    print(current_user.id)
 
+    return render_template("virus.html", user=current_user)
 
 # @views.route('/renders', methods=['GET', 'POST'])
 # @login_required

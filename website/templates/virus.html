@@ -1,17 +1,36 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-%}
+{% extends "base.html" %} 
+
+{% block title %}
+Home
+{% endblock %} 
+
+{% block content %}
 <div class="wrapper">
 
 <h1 align="center" style="color:black; margin: 20px;">Virus</h1>
 
 test
 
-
-
-
-
+<p>test</p>
+<table >
+    <tr>
+        <th>ID</th>
+        <th>virus_type</th>
+        <th>name</th>
+        <th>heartbeat_rate</th>
+        <th>user_id</th>
+    </tr>
+    {% for row in dataToHtml %}
+        <tr>
+            {% for field in row %}
+                <td>{{ field }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
 
 </div>
 
-{% endblock %}
 {% include 'baseScript.html' %}
+
+{% endblock %}

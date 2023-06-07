@@ -185,7 +185,7 @@ def saveHost():
 ## Get all virus for the user to display in virus view
 # @login_required
 @api.route('/getvirus', methods=['GET'])
-def getvirus(userId = "1", token = "1234567890"):
+def getVirus(userId = "1", token = "1234567890"):
     print("getvirus")
     # print(current_user.id)
     # data = request.get_json()

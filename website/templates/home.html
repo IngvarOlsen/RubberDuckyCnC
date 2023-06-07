@@ -4,10 +4,27 @@
 
 <h1 align="center" style="color:black; margin: 20px;">Hosts</h1>
 
-test
+<p>test</p>
+<table>
 
-
-
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Virus</th>
+        <th>Time</th>
+        <th>Setting</th>
+        <th>Date</th>
+        <th>Field7</th>
+        <th>Field8</th>
+    </tr>
+    {% for row in data %}
+        <tr>
+            {% for field in dataToHtml %}
+                <td>{{ field }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
 
 
 
