@@ -1,6 +1,7 @@
 # Ducktor, Rubberduck and CnC Server
 
 ![Project Image](https://raw.githubusercontent.com/IngvarOlsen/RubberDuckyCnC/main/ducktor/static/ducktor.png | width=100)
+<img src="https://raw.githubusercontent.com/IngvarOlsen/RubberDuckyCnC/main/ducktor/static/ducktor.png" width="300">
 <img src="[https://raw.githubusercontent.com/IngvarOlsen/RubberDuckyCnC/main/ducktor/static/ducktor.png](https://raw.githubusercontent.com/IngvarOlsen/RubberDuckyCnC/main/ducktor/static/ducktor.png)" height="300">
 ## About
 
