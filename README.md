@@ -14,6 +14,8 @@ Tutorial for setting up Pi as HID Gadget: https://randomnerdtutorials.com/raspbe
 
 The python file can be called before "exit 0" in the /etc/rc.local file after the HID gadget
 
+Also secrets are not so secret in this project atm, propper .env file will be made.
+
 ## Requirements
 
 Pip libraries you need to run this project. To install them, you can use pip:
