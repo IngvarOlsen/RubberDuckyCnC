@@ -1,33 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.schema import MetaData
 from os import path
 from flask_login import LoginManager
 
 db = SQLAlchemy()
 DB_NAME = "databasen.db"
-
-# # Create a SQLAlchemy engine that points to the SQLite database
-# engine = create_engine('sqlite:///database.db')
-
-# # Create a MetaData object
-# metadata = MetaData()
-
-
-# # Bind the MetaData object to the SQLite database using the engine
-# metadata.bind = engine
-# # Reflect the schema of the database into the MetaData object
-# metadata.reflect() 
-# # Create a base class for your SQLAlchemy models
-# Base = declarative_base(metadata=metadata)
-
-# # Create a session to manage your database
-# Session = sessionmaker(bind=engine)
-# session = Session()
-
 
 def create_app():
     app = Flask(__name__)
@@ -39,7 +16,6 @@ def create_app():
     from .auth import auth
     from .api import api
     
-
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(api, url_prefix='/')
@@ -58,7 +34,6 @@ def create_app():
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))
-
 
     return app
 

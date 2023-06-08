@@ -1,4 +1,5 @@
  ##### GENERATE private and public keys
+ #### Not using at the moment ####
 
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric import padding
