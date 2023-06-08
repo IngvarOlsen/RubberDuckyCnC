@@ -2,9 +2,42 @@
 %}
 <div class="wrapper">
 
-<h1 align="center" style="color:black; margin: 20px;">Hosts</h1>
+<h1 align="center" style="color:black; margin: 15px;">Hosts</h1>
 
-<p>test</p>
+
+
+<table style="color:black;">
+    {% for row in dataToHtml %}
+        <tr>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="card">
+                        <h5 class="card-header" style="color:black; background-color: rgb(246, 255, 165);"  >{{row[1]}}</h5>
+                        
+                        <div class="card-body" style="text-align: left;">
+                          <p class="card-text" style="color:black">Host id: {{row[0]}} </p>
+                          <p class="card-text" style="color:black">Pc name: {{row[1]}}</p>
+                          <p class="card-text" style="color:black">Country: {{row[2]}}</p>
+                          <p class="card-text" style="color:black">Host notes: {{row[3]}}</p>
+                          <p class="card-text" style="color:black">Setiing: {{row[4]}}</p>
+                          <p class="card-text" style="color:black">Last heartbeat: {{row[4]}}</p>
+                          <p class="card-text" style="color:black">Virus creator id: {{row[5]}}</p>
+                          <p class="card-text" style="color:black">Virus id: {{row[6]}}</p>
+                        </div>
+                        <footer class="card-footer">
+                          <button type="button" class="btn btn-secondary button" onClick="deleteHost({{user.id}}, {{row[0]}})">Clear Host Log</button>
+                          <button type="button" class="btn btn-warning">Send Virus Command</button>
+                          <button type="button" class="btn btn-danger button" onClick="deleteHost({{user.id}}, {{row[0]}})">Delete Virus On Host</button>
+                        </footer> 
+                      </div>
+                    </div>
+      </tr>  
+    {% endfor %}
+  </table>
+
+
+
+<!-- <p>test</p>
 <table>
 
     <tr>
@@ -24,7 +57,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
-</table>
+</table> -->
 
 
 

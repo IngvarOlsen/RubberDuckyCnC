@@ -7,12 +7,38 @@ Home
 {% block content %}
 <div class="wrapper">
 
-<h1 align="center" style="color:black; margin: 20px;">Virus</h1>
+<h1 align="center" style="color:black; margin: 15px;">Virus</h1>
 
-test
+<div style="text-align: left;">
+    <button type="button" style="margin-bottom: 20px;" class="btn btn-success button" onClick="newVirus({{user.id}})">Create Virus</button>
+</div>
 
-<p>test</p>
-<table >
+
+<table style="color:black;">
+    {% for row in dataToHtml %}
+        <tr>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="card">
+                        <h5 class="card-header" style="color:black; background-color: rgb(145, 247, 159);"  >{{row[3]}}</h5>
+                        
+                        <div class="card-body" style="text-align: left;">
+                          <p class="card-text" style="color:black">virus id: {{row[0]}} </p>
+                          <p class="card-text" style="color:black">virus type: {{row[1]}}</p>
+                          <p class="card-text" style="color:black">virus name: {{row[2]}}</p>
+                          <p class="card-text" style="color:black">virus heartbeat rate : {{row[3]}}</p>
+                          <p class="card-text" style="color:black">virus creator id: {{row[4]}}</p>
+                        </div>
+                        <footer class="card-footer">
+                          <button type="button" class="btn btn-danger button" onClick="deleteVirus({{user.id}}, {{row[0]}})">Delete Virus</button>
+                        </footer> 
+                      </div>
+                    </div>
+      </tr>  
+    {% endfor %}
+  </table>
+  
+<!-- <table >
     <tr>
         <th>ID</th>
         <th>virus_type</th>
@@ -27,10 +53,7 @@ test
             {% endfor %}
         </tr>
     {% endfor %}
-</table>
-
-</div>
-
+</table> -->
 {% include 'baseScript.html' %}
 
 {% endblock %}

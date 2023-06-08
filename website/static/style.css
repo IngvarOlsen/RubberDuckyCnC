@@ -17,10 +17,7 @@
     font-weight: 300;
   }
 
-  p{
-    <th>name</th>
-
-  }
+  
 
   .alert{
     margin-bottom: 0;
@@ -69,34 +66,34 @@
 
   body {
     font-family: 'Source Sans Pro', sans-serif;
-    color: black;
+    color: white;
     font-weight: 300;
     
   }
   body ::-webkit-input-placeholder {
     /* WebKit browsers */
     font-family: 'Source Sans Pro', sans-serif;
-    color: black;
+    color: white;
     font-weight: 300;
   }
   body :-moz-placeholder {
     /* Mozilla Firefox 4 to 18 */
     font-family: 'Source Sans Pro', sans-serif;
-    color: black;
+    color: white;
     opacity: 1;
     font-weight: 300;
   }
   body ::-moz-placeholder {
     /* Mozilla Firefox 19+ */
     font-family: 'Source Sans Pro', sans-serif;
-    color: black;
+    color: white;
     opacity: 1;
     font-weight: 300;
   }
   body :-ms-input-placeholder {
     /* Internet Explorer 10+ */
     font-family: 'Source Sans Pro', sans-serif;
-    color: black;
+    color: white;
     font-weight: 300;
   }
   .formTitle {
