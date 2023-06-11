@@ -6,9 +6,6 @@ import time
 import os
 from flask_cors import CORS
 import subprocess
-#Program variables
-LIST    = 1     #If LIST is 1 than complete keymap code is shown on screen
-EXECUTE    = 1     #If EXECUTE is 1 than complete keymap code is send to the HID device and executed
 
 #Variables
 NULL_CHAR = chr(0)
@@ -45,10 +42,6 @@ def type_text(text, speed):
     windows_keyword = "<windows>"
     windowsR_keyword = "<windows+r>"
     end_keyword = "<end>"
-    pause500 = "<500>"
-    pause1000 = "<1000>"
-    pause2000 = "<2000>"
-    pause3000 = "<3000>"
     enter_code = chr(40)  # ASCII code for Enter key
 
     #Custom commands
@@ -71,7 +64,6 @@ def type_text(text, speed):
             break
         else:
             for char in line:
-                #time.sleep(speed / 1000)
                 time.sleep(0.05)
                 #Check for space
                 
@@ -109,7 +101,7 @@ def type_text(text, speed):
                         '(': 37, ')':38,'!': 30, '#': 32, '$': 33, '%': 34, '^': 35,
                         '/': 36, '-': 56, '_': 45,
                         '=': 39, '+': 46, '[': 47, ']': 48, '}': 48,
-                        '\\': 49, '|': 49, ';': 51, ':': 55, "'": 50, '"': 31,
+                        '\\': 49, '|': 999, ';': 51, ':': 55, "'": 50, '"': 31,
                         ',': 54, '<': 54, '.': 55, '?': 45
                     }
                     if char in special_char_codes:
@@ -157,7 +149,7 @@ def check_execute_script_setting(source=None):
                 type_text(text_to_type, settings.get('speed'))
                 #type_text(text_to_type)
     
-
+# Listens on "execute" emit from frontend javascript socketio
 @socketio.on('execute')
 def executeScript():
     print("Execute script called")
@@ -173,26 +165,36 @@ def executeScript():
 def settings():
     return render_template('settings.html')
 
-@app.route('/save_settings', methods=['POST'])
+# Saves settings to settings.json file, and creates one if there is no present file located
 def save_settings():
     settings = {
         'execute_script': False,
         'duck_file': '',
-        'prompt_loop':False,
+        'prompt_loop': False,
         'speed': 500,
     }
 
-    if 'execute_script' in request.form:
-        settings['execute_script'] = True
+    # Create file with default settings if it does not exist
+    if not os.path.exists('settings.json'):
+        with open('settings.json', 'w') as file:
+            json.dump(settings, file)
 
+    # Load existing settings
+    with open('settings.json', 'r') as file:
+        loaded_settings = json.load(file)
+        settings.update(loaded_settings)
+
+    # Update the settings with form data
+    if 'execute_script' in request.form:
+        settings['execute_script'] = request.form.get('execute_script') == 'True'
     if 'duck_file' in request.form:
         settings['duck_file'] = request.form['duck_file']
-    
     if 'prompt_loop' in request.form:
-        settings['prompt_loop'] = request.form['duck_file']
+        settings['prompt_loop'] = request.form.get('prompt_loop') == 'True'
     if 'speed' in request.form:
-        settings['speed'] = request.form['speed']
+        settings['speed'] = int(request.form['speed'])
 
+    # Save the updated settings
     with open('settings.json', 'w') as file:
         json.dump(settings, file)
 
