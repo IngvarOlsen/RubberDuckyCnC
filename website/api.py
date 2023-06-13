@@ -25,16 +25,6 @@ def dbConnect():
     global curs
     curs = conn.cursor()
 
-# Does not get used but could reduce repetativeness 
-def execute_query(query, params):
-    with sqlite3.connect('instance/databasen.db') as conn:
-        curs = conn.cursor()
-        curs.execute(query, params)
-        result = curs.fetchall()
-        conn.close()
-    return result
-
-
 
 #######################
 ####### APIs ##########
